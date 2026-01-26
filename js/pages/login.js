@@ -1,260 +1,158 @@
 (function () {
-  // Gyroscope permission handling
-  let gyroPopup = null;
-
-  function createGyroPopup() {
-    if (gyroPopup) return;
-
-    gyroPopup = document.createElement('div');
-    gyroPopup.id = 'gyroPopup';
-    gyroPopup.innerHTML = `
-      <div class="gyro-popup__overlay"></div>
-      <div class="gyro-popup__content">
-        <div class="gyro-popup__header">
-          <img src="assets/icons/gyroscope.svg" alt="Gyroscope" class="gyro-popup__icon">
-          <h2 class="gyro-popup__title">Funkcja Gyroscope</h2>
-        </div>
-        <div class="gyro-popup__body">
-          <p>Aby zapewnić pełną funkcjonalność aplikacji, potrzebujemy dostępu do czujnika ruchu (gyroscope).</p>
-          <p>Funkcja pozwala na interakcję z dokumentami za pomocą ruchu urządzenia.</p>
-          <div class="gyro-popup__buttons">
-            <button type="button" class="gyro-popup__btn gyro-popup__btn--primary" id="enableGyroBtn">
-              Włącz gyroscope
-            </button>
-            <button type="button" class="gyro-popup__btn gyro-popup__btn--secondary" id="skipGyroBtn">
-              Pomiń na razie
-            </button>
-          </div>
-          <p class="gyro-popup__note"><small>Ta prośba pojawi się przy każdym logowaniu.</small></p>
-        </div>
-      </div>
-    `;
-
-    // Add styles
-    const style = document.createElement('style');
-    style.textContent = `
-      #gyroPopup {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        z-index: 9999;
-        display: none;
+  // Stabilizacja viewportu w PWA/Safari: aktualizacja --vh po kluczowych zdarzeniach
+  function updateVh() {
+    try {
+      var h =
+        (window.visualViewport && window.visualViewport.height) ||
+        window.innerHeight ||
+        document.documentElement.clientHeight ||
+        0;
+      if (h > 0) {
+        var vh = h * 0.01;
+        document.documentElement.style.setProperty("--vh", vh + "px");
       }
-      
-      .gyro-popup__overlay {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.5);
-        backdrop-filter: blur(4px);
-        -webkit-backdrop-filter: blur(4px);
-      }
-      
-      .gyro-popup__content {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background: var(--background-primary, #ffffff);
-        border-radius: 16px;
-        padding: 24px;
-        width: 90%;
-        max-width: 400px;
-        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-        border: 1px solid var(--border-primary, #e5e7eb);
-      }
-      
-      .gyro-popup__header {
-        display: flex;
-        align-items: center;
-        margin-bottom: 20px;
-      }
-      
-      .gyro-popup__icon {
-        width: 40px;
-        height: 40px;
-        margin-right: 12px;
-      }
-      
-      .gyro-popup__title {
-        margin: 0;
-        font-size: 20px;
-        font-weight: 600;
-        color: var(--text-primary, #111827);
-      }
-      
-      .gyro-popup__body p {
-        margin: 0 0 16px 0;
-        color: var(--text-secondary, #4b5563);
-        line-height: 1.5;
-      }
-      
-      .gyro-popup__buttons {
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-        margin: 24px 0 16px;
-      }
-      
-      .gyro-popup__btn {
-        padding: 14px 20px;
-        border-radius: 10px;
-        border: none;
-        font-size: 16px;
-        font-weight: 500;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        font-family: inherit;
-      }
-      
-      .gyro-popup__btn--primary {
-        background: var(--accent-primary, #3b82f6);
-        color: white;
-      }
-      
-      .gyro-popup__btn--primary:hover {
-        background: var(--accent-hover, #2563eb);
-      }
-      
-      .gyro-popup__btn--secondary {
-        background: var(--background-secondary, #f3f4f6);
-        color: var(--text-primary, #111827);
-        border: 1px solid var(--border-primary, #e5e7eb);
-      }
-      
-      .gyro-popup__btn--secondary:hover {
-        background: var(--background-tertiary, #e5e7eb);
-      }
-      
-      .gyro-popup__note {
-        text-align: center;
-        color: var(--text-tertiary, #6b7280) !important;
-        margin-top: 12px !important;
-      }
-      
-      @media (prefers-color-scheme: dark) {
-        .gyro-popup__content {
-          background: var(--background-primary-dark, #1f2937);
-          border-color: var(--border-primary-dark, #374151);
-        }
-        
-        .gyro-popup__title {
-          color: var(--text-primary-dark, #f9fafb);
-        }
-        
-        .gyro-popup__body p {
-          color: var(--text-secondary-dark, #d1d5db);
-        }
-        
-        .gyro-popup__btn--secondary {
-          background: var(--background-secondary-dark, #374151);
-          color: var(--text-primary-dark, #f9fafb);
-          border-color: var(--border-primary-dark, #4b5563);
-        }
-        
-        .gyro-popup__btn--secondary:hover {
-          background: var(--background-tertiary-dark, #4b5563);
-        }
-      }
-    `;
-    
-    document.head.appendChild(style);
-    document.body.appendChild(gyroPopup);
+    } catch (_) {}
   }
-
-  function showGyroPopup() {
-    // ALWAYS show the popup, don't check localStorage or previous choices
-    createGyroPopup();
-    gyroPopup.style.display = 'block';
-    
-    // Add button handlers
-    document.getElementById('enableGyroBtn').addEventListener('click', function() {
-      requestMotionPermission();
-    });
-    
-    document.getElementById('skipGyroBtn').addEventListener('click', function() {
-      hideGyroPopup();
-      // Don't save to localStorage, we'll ask again next time
-      proceedWithLogin();
+  function rafFix() {
+    // podwójny rAF – upewnia się, że liczymy po pierwszym malowaniu
+    requestAnimationFrame(function () {
+      requestAnimationFrame(updateVh);
     });
   }
-
-  function hideGyroPopup() {
-    if (gyroPopup) {
-      gyroPopup.style.display = 'none';
+  // inicjalne ustawienie + zdarzenia zmiany
+  document.addEventListener("DOMContentLoaded", rafFix, { once: true });
+  window.addEventListener("pageshow", rafFix);
+  window.addEventListener("resize", rafFix);
+  window.addEventListener("orientationchange", rafFix);
+  try {
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener("resize", rafFix);
+      window.visualViewport.addEventListener("scroll", rafFix);
     }
-  }
+  } catch (_) {}
+  setTimeout(rafFix, 300);
+  setTimeout(rafFix, 1000);
+})();
 
-  function requestMotionPermission() {
-    if (typeof DeviceOrientationEvent !== 'undefined' && 
-        typeof DeviceOrientationEvent.requestPermission === 'function') {
-      
-      console.log('[Gyroscope] Requesting permission on iOS...');
-      
-      DeviceOrientationEvent.requestPermission()
-        .then(permissionState => {
-          console.log('[Gyroscope] Permission state:', permissionState);
-          
-          if (permissionState === 'granted') {
-            // Don't save to localStorage, we'll ask again next time
-            alert('Gyroscope został włączony dla tej sesji!');
-          } else {
-            // Don't save to localStorage
-            alert('Gyroscope nie został włączony. Możesz to zmienić w ustawieniach Safari.');
-          }
-          
-          hideGyroPopup();
-          proceedWithLogin();
-        })
-        .catch(err => {
-          console.error('[Gyroscope] Permission error:', err);
-          hideGyroPopup();
-          proceedWithLogin();
-        });
-        
+// Lokalne logowanie z localStorage
+try {
+  var pi = document.getElementById("passwordInput");
+  if (pi) {
+    pi.addEventListener("input", function () {
+      if ((this.value || "").length > 0) {
+        try {
+          showPwdError("");
+        } catch (_) {
+          try {
+            var pe = document.getElementById("passwordError");
+            if (pe) {
+              pe.textContent = "";
+              pe.style.display = "none";
+              if (pe.classList) pe.classList.remove("warn");
+            }
+          } catch (_) {}
+          if (this.classList) this.classList.remove("input-error");
+        }
+      }
+    });
+  }
+} catch (_) {}
+
+function resetLocalPassword() {
+  try {
+    try {
+      localStorage.removeItem("userPasswordHash");
+    } catch (_) {}
+    try {
+      sessionStorage.removeItem("userUnlocked");
+    } catch (_) {}
+    try {
+      var pi = document.getElementById("passwordInput");
+      if (pi) {
+        pi.value = "";
+        pi.focus();
+      }
+    } catch (_) {}
+    try {
+      showPwdError("");
+    } catch (_) {}
+    try {
+      alert("Hasło zostało zresetowane. Ustaw nowe przy następnym logowaniu.");
+    } catch (_) {}
+  } catch (_) {}
+}
+
+function redirectToDashboard() {
+  try {
+    sessionStorage.setItem("from-login", "true");
+  } catch (e) {}
+  window.location.href = "documents.html";
+}
+
+function showPwdError(msg) {
+  try {
+    var el = document.getElementById("passwordError");
+    if (!el) {
+      var f = document.querySelector(".login__forgot");
+      if (!f) {
+        if (msg) alert(msg);
+        return;
+      }
+      el = document.createElement("div");
+      el.id = "passwordError";
+      el.className = "login__error";
+      el.style.color = "#b91c1c";
+      el.style.margin = "1px 0";
+      el.style.display = "none";
+      f.parentNode.insertBefore(el, f);
+    }
+    if (msg) {
+      el.textContent = msg;
+      try {
+        if (msg === "Wpisz hasło." || msg === "Wpisz poprawne hasło.") {
+          el.classList.add("warn");
+        } else {
+          el.classList.remove("warn");
+        }
+      } catch (_) {}
+      el.style.display = "";
     } else {
-      // For non-iOS devices
-      console.log('[Gyroscope] Non-iOS device, gyro available');
-      // Don't save to localStorage
-      alert('Gyroscope został włączony dla tej sesji!');
-      hideGyroPopup();
-      proceedWithLogin();
+      el.textContent = "";
+      try {
+        el.classList.remove("warn");
+      } catch (_) {}
+      el.style.display = "none";
     }
+  } catch (_) {
+    if (msg) alert(msg);
   }
+}
 
-  function proceedWithLogin() {
-    // This function is called after gyro popup is handled
-    // Now we can actually process the login
-    processLoginAfterGyro();
-  }
-
-  function processLoginAfterGyro() {
-    // Get password input value
-    const input = document.getElementById("passwordInput");
-    const pwd = input && input.value ? String(input.value) : "";
-    
+function handleLoginSubmit(e) {
+  console.log("[Login] handleLoginSubmit called");
+  try {
+    if (e && typeof e.preventDefault === "function") e.preventDefault();
+    var input = document.getElementById("passwordInput");
+    var pwd = input && input.value ? String(input.value) : "";
     if (!pwd) {
       showPwdError("Wpisz hasło.");
       return;
     }
 
-    // Validate password and proceed with login
+    // Walidacja hasła
     var stored = null;
     try {
       stored = localStorage.getItem("userPasswordHash");
     } catch (_) {
       stored = null;
     }
-    
+
     sha256Hex(pwd)
       .then(function (h) {
         console.log("[Login] Password validated");
+
         if (!stored) {
-          // First login - set password
+          // Pierwsze logowanie - ustaw hasło
           try {
             localStorage.setItem("userPasswordHash", h);
           } catch (_) {}
@@ -263,11 +161,45 @@
           } catch (_) {}
           showPwdError("");
           console.log("[Login] First time login successful");
-          redirectToDashboard();
+          
+          // Najpierw sprawdź czy pokazać modal biometrii
+          if (typeof window.setupBiometricAfterLogin === 'function') {
+            console.log("[Login] Checking if biometric setup should be shown...");
+            
+            // Sprawdź asynchronicznie czy biometria jest dostępna
+            if (window.BiometricAuth) {
+              BiometricAuth.checkPlatformSupport().then(function(isAvailable) {
+                if (isAvailable && !BiometricAuth.isRegistered()) {
+                  // Pokaż modal i OPÓŹNIJ przekierowanie
+                  console.log("[Login] Biometric available - showing setup modal");
+                  setupBiometricAfterLogin();
+                  // Nie przekierowuj jeszcze - użytkownik może chcieć skonfigurować biometrię
+                  // Modal sam przekieruje po zamknięciu
+                  return;
+                } else {
+                  // Biometria niedostępna lub już skonfigurowana - normalnie przekieruj
+                  console.log("[Login] Biometric not available or already registered - redirecting");
+                  redirectToDashboard();
+                }
+              }).catch(function(error) {
+                console.error("[Login] Error checking biometric:", error);
+                redirectToDashboard();
+              });
+            } else {
+              // BiometricAuth nie załadowany - normalnie przekieruj
+              console.log("[Login] BiometricAuth not loaded - redirecting");
+              redirectToDashboard();
+            }
+          } else {
+            // Funkcja niedostępna - normalnie przekieruj
+            redirectToDashboard();
+          }
+          
           return;
         }
+
         if (stored && stored === h) {
-          // Correct password
+          // Hasło poprawne
           try {
             sessionStorage.setItem("userUnlocked", "1");
           } catch (_) {}
@@ -276,335 +208,759 @@
           redirectToDashboard();
           return;
         }
-        // Incorrect password
+
+        // Hasło niepoprawne
         showPwdError("Wpisz poprawne hasło.");
       })
       .catch(function (err) {
         console.error("[Login] Password hash error:", err);
         showPwdError("Błąd");
       });
+  } catch (err) {
+    console.error("[Login] Error:", err);
+    showPwdError("Błąd");
   }
+}
 
-  // Modified handleLoginSubmit to ALWAYS show gyro popup
-  function handleLoginSubmit(e) {
-    console.log("[Login] handleLoginSubmit called");
-    try {
-      if (e && typeof e.preventDefault === "function") e.preventDefault();
-      
-      const input = document.getElementById("passwordInput");
-      const pwd = input && input.value ? String(input.value) : "";
-      
-      if (!pwd) {
-        showPwdError("Wpisz hasło.");
-        return;
-      }
-      
-      // ALWAYS show gyro popup on login
-      showGyroPopup();
-      return false;
-    } catch (err) {
-      console.error("[Login] Error:", err);
-      showPwdError("Błąd");
+function togglePasswordVisibility() {
+  const input = document.getElementById("passwordInput");
+  const btn = document.querySelector(".login__eye");
+  if (!input || !btn) return;
+  const icon = btn.querySelector("img");
+  if (input.type === "password") {
+    input.type = "text";
+    if (icon) {
+      icon.src = "assets/icons/hide_password.svg";
+      icon.alt = "Ukryj hasło";
+    } else {
+      btn.innerHTML =
+        "<img src='assets/icons/hide_password.svg' alt='Ukryj hasło'>";
     }
-  }
-
-  // Stabilizacja viewportu w PWA/Safari
-  function updateVh() {
-    try {
-      var h = (window.visualViewport && window.visualViewport.height) || window.innerHeight || document.documentElement.clientHeight || 0;
-      if (h > 0) {
-        var vh = h * 0.01;
-        document.documentElement.style.setProperty("--vh", vh + "px");
-      }
-    } catch (_) {}
-  }
-
-  function rafFix() {
-    requestAnimationFrame(function () {
-      requestAnimationFrame(updateVh);
-    });
-  }
-
-  // inicjalne ustawienie + zdarzenia zmiany
-  document.addEventListener("DOMContentLoaded", rafFix, { once: true });
-  window.addEventListener("pageshow", rafFix);
-  window.addEventListener("resize", rafFix);
-  window.addEventListener("orientationchange", rafFix);
-  
-  try {
-    if (window.visualViewport) {
-      window.visualViewport.addEventListener("resize", rafFix);
-      window.visualViewport.addEventListener("scroll", rafFix);
+    btn.setAttribute("aria-label", "Ukryj hasło");
+  } else {
+    input.type = "password";
+    if (icon) {
+      icon.src = "assets/icons/show_password.svg";
+      icon.alt = "Pokaż hasło";
+    } else {
+      btn.innerHTML =
+        "<img src='assets/icons/show_password.svg' alt='Pokaż hasło'>";
     }
-  } catch (_) {}
-  
-  setTimeout(rafFix, 300);
-  setTimeout(rafFix, 1000);
+    btn.setAttribute("aria-label", "Pokaż hasło");
+  }
+}
 
-  // Lokalne logowanie z localStorage
+window.addEventListener("load", function () {
   try {
-    var pi = document.getElementById("passwordInput");
-    if (pi) {
-      pi.addEventListener("input", function () {
-        if ((this.value || "").length > 0) {
-          try {
-            showPwdError("");
-          } catch (_) {
-            try {
-              var pe = document.getElementById("passwordError");
-              if (pe) {
-                pe.textContent = "";
-                pe.style.display = "none";
-                if (pe.classList) pe.classList.remove("warn");
-              }
-            } catch (_) {}
-            if (this.classList) this.classList.remove("input-error");
-          }
-        }
+    checkInstallation();
+  } catch (e) {}
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+  try {
+    var forgot = document.querySelector(".login__forgot");
+    if (forgot) {
+      forgot.addEventListener("click", function (e) {
+        try {
+          if (e && typeof e.preventDefault === "function") e.preventDefault();
+        } catch (_) {}
+        var doReset = true;
+        try {
+          doReset = confirm("Zresetować zapisane hasło na tym urządzeniu?");
+        } catch (_) {}
+        if (doReset) resetLocalPassword();
       });
     }
   } catch (_) {}
+});
 
-  function resetLocalPassword() {
-    try {
-      try {
-        localStorage.removeItem("userPasswordHash");
-      } catch (_) {}
-      try {
-        sessionStorage.removeItem("userUnlocked");
-      } catch (_) {}
-      try {
-        var pi = document.getElementById("passwordInput");
-        if (pi) {
-          pi.value = "";
-          pi.focus();
-        }
-      } catch (_) {}
-      try {
-        showPwdError("");
-      } catch (_) {}
-      try {
-        alert("Hasło zostało zresetowane. Ustaw nowe przy następnym logowaniu.");
-      } catch (_) {}
-    } catch (_) {}
+async function sha256Hex(str) {
+  const enc = new TextEncoder();
+  const data = enc.encode(str);
+  const buf = await (window.crypto && crypto.subtle && crypto.subtle.digest
+    ? crypto.subtle.digest("SHA-256", data)
+    : Promise.resolve(new Uint8Array()));
+  const arr = Array.from(new Uint8Array(buf));
+  return arr.map((b) => b.toString(16).padStart(2, "0")).join("");
+}
+
+(function () {
+  var scheduleId = null;
+  var tickId = null;
+
+  function setGreeting() {
+    var title = document.querySelector(".login__title");
+    if (!title) return;
+    var now = new Date();
+    var hour = now.getHours();
+    var isEvening = hour >= 18 || hour < 6;
+    title.textContent = isEvening ? "Dobry wieczór!" : "Dzień dobry!";
   }
 
-  function redirectToDashboard() {
-    try {
-      sessionStorage.setItem("from-login", "true");
-    } catch (e) {}
-    window.location.href = "documents.html";
-  }
-
-  function showPwdError(msg) {
-    try {
-      var el = document.getElementById("passwordError");
-      if (!el) {
-        var f = document.querySelector(".login__forgot");
-        if (!f) {
-          if (msg) alert(msg);
-          return;
-        }
-        el = document.createElement("div");
-        el.id = "passwordError";
-        el.className = "login__error";
-        el.style.color = "#b91c1c";
-        el.style.margin = "1px 0";
-        el.style.display = "none";
-        f.parentNode.insertBefore(el, f);
-      }
-      if (msg) {
-        el.textContent = msg;
-        try {
-          if (msg === "Wpisz hasło." || msg === "Wpisz poprawne hasło.") {
-            el.classList.add("warn");
-          } else {
-            el.classList.remove("warn");
-          }
-        } catch (_) {}
-        el.style.display = "";
-      } else {
-        el.textContent = "";
-        try {
-          el.classList.remove("warn");
-        } catch (_) {}
-        el.style.display = "none";
-      }
-    } catch (_) {
-      if (msg) alert(msg);
-    }
-  }
-
-  function togglePasswordVisibility() {
-    const input = document.getElementById("passwordInput");
-    const btn = document.querySelector(".login__eye");
-    if (!input || !btn) return;
-    const icon = btn.querySelector("img");
-    if (input.type === "password") {
-      input.type = "text";
-      if (icon) {
-        icon.src = "assets/icons/hide_password.svg";
-        icon.alt = "Ukryj hasło";
-      } else {
-        btn.innerHTML = "<img src='assets/icons/hide_password.svg' alt='Ukryj hasło'>";
-      }
-      btn.setAttribute("aria-label", "Ukryj hasło");
+  function msUntilNextChange() {
+    var now = new Date();
+    var next = new Date(now.getTime());
+    var h = now.getHours();
+    if (h < 6) {
+      next.setHours(6, 0, 0, 0);
+    } else if (h < 18) {
+      next.setHours(18, 0, 0, 0);
     } else {
-      input.type = "password";
-      if (icon) {
-        icon.src = "assets/icons/show_password.svg";
-        icon.alt = "Pokaż hasło";
-      } else {
-        btn.innerHTML = "<img src='assets/icons/show_password.svg' alt='Pokaż hasło'>";
-      }
-      btn.setAttribute("aria-label", "Pokaż hasło");
+      next.setDate(next.getDate() + 1);
+      next.setHours(6, 0, 0, 0);
     }
+    var diff = next.getTime() - now.getTime();
+    return Math.max(0, diff) + 500;
   }
 
-  window.addEventListener("load", function () {
-    try {
-      checkInstallation();
-    } catch (e) {}
-  });
+  function scheduleNext() {
+    if (scheduleId) {
+      clearTimeout(scheduleId);
+      scheduleId = null;
+    }
+    scheduleId = setTimeout(function () {
+      setGreeting();
+      scheduleNext();
+    }, msUntilNextChange());
+  }
 
   document.addEventListener("DOMContentLoaded", function () {
     try {
-      var forgot = document.querySelector(".login__forgot");
-      if (forgot) {
-        forgot.addEventListener("click", function (e) {
-          try {
-            if (e && typeof e.preventDefault === "function") e.preventDefault();
-          } catch (_) {}
-          var doReset = true;
-          try {
-            doReset = confirm("Zresetować zapisane hasło na tym urządzeniu?");
-          } catch (_) {}
-          if (doReset) resetLocalPassword();
-        });
+      setGreeting();
+      scheduleNext();
+      if (tickId) {
+        clearInterval(tickId);
       }
-    } catch (_) {}
-  });
-
-  async function sha256Hex(str) {
-    const enc = new TextEncoder();
-    const data = enc.encode(str);
-    const buf = await (window.crypto && crypto.subtle && crypto.subtle.digest ? crypto.subtle.digest("SHA-256", data) : Promise.resolve(new Uint8Array()));
-    const arr = Array.from(new Uint8Array(buf));
-    return arr.map((b) => b.toString(16).padStart(2, "0")).join("");
-  }
-
-  // Dynamiczne powitanie
-  (function () {
-    var scheduleId = null;
-    var tickId = null;
-    
-    function setGreeting() {
-      var title = document.querySelector(".login__title");
-      if (!title) return;
-      var now = new Date();
-      var hour = now.getHours();
-      var isEvening = hour >= 18 || hour < 6;
-      title.textContent = isEvening ? "Dobry wieczór!" : "Dzień dobry!";
-    }
-    
-    function msUntilNextChange() {
-      var now = new Date();
-      var next = new Date(now.getTime());
-      var h = now.getHours();
-      if (h < 6) {
-        next.setHours(6, 0, 0, 0);
-      } else if (h < 18) {
-        next.setHours(18, 0, 0, 0);
-      } else {
-        next.setDate(next.getDate() + 1);
-        next.setHours(6, 0, 0, 0);
-      }
-      var diff = next.getTime() - now.getTime();
-      return Math.max(0, diff) + 500;
-    }
-    
-    function scheduleNext() {
-      if (scheduleId) {
-        clearTimeout(scheduleId);
-        scheduleId = null;
-      }
-      scheduleId = setTimeout(function () {
-        setGreeting();
-        scheduleNext();
-      }, msUntilNextChange());
-    }
-    
-    document.addEventListener("DOMContentLoaded", function () {
-      try {
-        setGreeting();
-        scheduleNext();
-        if (tickId) {
-          clearInterval(tickId);
-        }
-        tickId = setInterval(function () {
-          try {
-            setGreeting();
-            scheduleNext();
-          } catch (_) {}
-        }, 60000);
-      } catch (e) {}
-    });
-    
-    try {
-      window.addEventListener("focus", function () {
+      tickId = setInterval(function () {
         try {
           setGreeting();
           scheduleNext();
         } catch (_) {}
-      });
-      document.addEventListener("visibilitychange", function () {
-        if (!document.hidden) {
-          try {
-            setGreeting();
-            scheduleNext();
-          } catch (_) {}
-        }
-      });
-    } catch (_) {}
-  })();
+      }, 60000);
+    } catch (e) {}
+  });
 
-  // Obsługa dark mode dla KPO logo
-  (function () {
-    function updateKPOLogo() {
+  try {
+    window.addEventListener("focus", function () {
       try {
-        const kpoLogo = document.querySelector(".login__kpoLogo");
-        if (!kpoLogo) return;
-        const isDark = document.documentElement.getAttribute("data-theme") === "dark";
-        if (isDark) {
-          kpoLogo.src = kpoLogo.getAttribute("data-dark-src");
-        } else {
-          kpoLogo.src = "assets/icons/coi_common_ui_kpo_logo_group.svg";
-        }
+        setGreeting();
+        scheduleNext();
       } catch (_) {}
-    }
-    
-    document.addEventListener("DOMContentLoaded", updateKPOLogo);
-    const observer = new MutationObserver(function (mutations) {
-      mutations.forEach(function (mutation) {
-        if (mutation.attributeName === "data-theme") {
-          updateKPOLogo();
-        }
-      });
     });
-    document.addEventListener("DOMContentLoaded", function () {
-      observer.observe(document.documentElement, {
-        attributes: true,
-        attributeFilter: ["data-theme"],
-      });
+    document.addEventListener("visibilitychange", function () {
+      if (!document.hidden) {
+        try {
+          setGreeting();
+          scheduleNext();
+        } catch (_) {}
+      }
     });
-  })();
+  } catch (_) {}
+})();
 
-  // Attach form submit handler
+// Obsługa dark mode dla KPO logo
+(function () {
+  function updateKPOLogo() {
+    try {
+      const kpoLogo = document.querySelector(".login__kpoLogo");
+      if (!kpoLogo) return;
+
+      const isDark =
+        document.documentElement.getAttribute("data-theme") === "dark";
+      if (isDark) {
+        kpoLogo.src = kpoLogo.getAttribute("data-dark-src");
+      } else {
+        kpoLogo.src = "assets/icons/coi_common_ui_kpo_logo_group.svg";
+      }
+    } catch (_) {}
+  }
+
+  // Uruchom przy załadowaniu
+  document.addEventListener("DOMContentLoaded", updateKPOLogo);
+
+  // Słuchaj zmian dark mode
+  const observer = new MutationObserver(function (mutations) {
+    mutations.forEach(function (mutation) {
+      if (mutation.attributeName === "data-theme") {
+        updateKPOLogo();
+      }
+    });
+  });
+
   document.addEventListener("DOMContentLoaded", function () {
-    const form = document.getElementById("loginForm");
-    if (form) {
-      form.addEventListener("submit", handleLoginSubmit);
-      console.log("[Login] Form submit handler attached");
-    }
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["data-theme"],
+    });
   });
 })();
+
+// Request motion permission przy każdym załadowaniu login.html
+(function () {
+  function requestMotionPermissionOnce() {
+    if (
+      typeof DeviceOrientationEvent !== "undefined" &&
+      typeof DeviceOrientationEvent.requestPermission === "function"
+    ) {
+      console.log(
+        "[Login] iOS detected, will request motion permission on first interaction"
+      );
+      // iOS wymaga wywołania w call stacku user gesture, więc requestujemy przy pierwszym kliknięciu formularza
+      const form = document.getElementById("loginForm");
+      const passwordInput = document.getElementById("passwordInput");
+
+      let requested = false;
+      const handleFirstInteraction = function () {
+        if (requested) return;
+        requested = true;
+
+        console.log("[Login] Requesting motion permission...");
+        DeviceOrientationEvent.requestPermission()
+          .then((permission) => {
+            console.log("[Login] Motion permission response:", permission);
+          })
+          .catch((err) => {
+            console.log("[Login] Motion permission error:", err);
+          });
+      };
+
+      if (form) {
+        form.addEventListener("click", handleFirstInteraction, { once: true });
+      }
+      if (passwordInput) {
+        passwordInput.addEventListener("focus", handleFirstInteraction, {
+          once: true,
+        });
+      }
+    } else {
+      console.log(
+        "[Login] Non-iOS device or old iOS, no motion permission needed"
+      );
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", requestMotionPermissionOnce);
+  window.addEventListener("pageshow", requestMotionPermissionOnce);
+})();
+
+// Attach form submit handler
+document.addEventListener("DOMContentLoaded", function () {
+  const form = document.getElementById("loginForm");
+  if (form) {
+    form.addEventListener("submit", handleLoginSubmit);
+    console.log("[Login] Form submit handler attached");
+  }
+  
+  // Inicjalizuj UI biometryczne
+  initBiometricUI();
+});
+
+// ========== BIOMETRIC AUTHENTICATION INTEGRATION ==========
+
+function initBiometricUI() {
+  // Sprawdź czy biometria jest dostępna
+  if (typeof window.BiometricAuth === 'undefined') {
+    console.log('[Login] BiometricAuth not loaded yet, waiting...');
+    // Spróbuj ponownie po krótkiej chwili
+    setTimeout(initBiometricUI, 100);
+    return;
+  }
+
+  BiometricAuth.checkPlatformSupport().then(function(isAvailable) {
+    if (!isAvailable) {
+      console.log('[Login] Biometric authentication not available on this device');
+      return;
+    }
+
+    console.log('[Login] Biometric authentication available');
+    
+    // Sprawdź czy użytkownik ma już zarejestrowaną biometrię
+    const isRegistered = BiometricAuth.isRegistered();
+    
+    if (isRegistered) {
+      // Dodaj przycisk logowania biometrycznego
+      addBiometricLoginButton();
+    } else {
+      // Sprawdź czy użytkownik ma ustawione hasło
+      const hasPassword = localStorage.getItem('userPasswordHash');
+      if (hasPassword) {
+        // Pokaż przycisk konfiguracji biometrii
+        showManualBiometricSetupButton();
+      }
+    }
+  }).catch(function(error) {
+    console.error('[Login] Error checking biometric support:', error);
+  });
+}
+
+// Nowa funkcja: pokazuje przycisk konfiguracji
+function showManualBiometricSetupButton() {
+  const btn = document.getElementById('manualBiometricSetup');
+  if (btn) {
+    btn.style.display = 'flex';
+    btn.addEventListener('click', function() {
+      console.log('[Login] Manual biometric setup clicked');
+      showBiometricSetupModal();
+    });
+    console.log('[Login] Manual biometric setup button shown');
+  }
+}
+
+function addBiometricLoginButton() {
+  // Użyj istniejącego przycisku manualBiometricSetup i zmień go na przycisk logowania
+  const btn = document.getElementById('manualBiometricSetup');
+  if (!btn) {
+    console.error('[Login] Cannot find manualBiometricSetup button');
+    return;
+  }
+
+  // Zmień tekst i handler
+  btn.innerHTML = `
+    <img src="assets/icons/aa009_fingerprint.svg" alt="Odcisk palca" class="login__biometric-setup-icon">
+    <span>Zaloguj się biometrycznie</span>
+  `;
+  
+  // Usuń stary handler i dodaj nowy
+  const newBtn = btn.cloneNode(true);
+  btn.parentNode.replaceChild(newBtn, btn);
+  
+  newBtn.style.display = 'flex';
+  newBtn.addEventListener('click', handleBiometricLogin);
+  
+  console.log('[Login] Biometric login button configured');
+}
+
+function handleBiometricLogin(e) {
+  if (e && typeof e.preventDefault === 'function') {
+    e.preventDefault();
+  }
+
+  console.log('[Login] Biometric login initiated');
+  
+  // Pokaż loader
+  const btn = document.getElementById('manualBiometricSetup');
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = `
+      <div class="spinner"></div>
+      <span>Uwierzytelnianie...</span>
+    `;
+  }
+
+  BiometricAuth.authenticate()
+    .then(function(passwordHash) {
+      console.log('[Login] Biometric authentication successful');
+      
+      // Zaloguj użytkownika
+      try {
+        sessionStorage.setItem('userUnlocked', '1');
+      } catch (_) {}
+      
+      showPwdError('');
+      redirectToDashboard();
+    })
+    .catch(function(error) {
+      console.error('[Login] Biometric authentication failed:', error);
+      
+      // Przywróć przycisk
+      if (btn) {
+        btn.disabled = false;
+        btn.innerHTML = `
+          <img src="assets/icons/aa009_fingerprint.svg" alt="Odcisk palca" class="login__biometric-setup-icon">
+          <span>Zaloguj się biometrycznie</span>
+        `;
+      }
+      
+      // Pokaż odpowiedni komunikat błędu
+      if (error.name === 'NotAllowedError') {
+        showBiometricToast('Logowanie anulowane.', 'info');
+      } else if (error.message.includes('not registered')) {
+        showBiometricToast('Najpierw zaloguj się hasłem, aby skonfigurować biometrię.', 'error');
+      } else {
+        showBiometricToast('Błąd uwierzytelniania biometrycznego.', 'error');
+      }
+    });
+}
+
+function showBiometricSetupPrompt() {
+  // Nie pokazuj promptu automatycznie, tylko dodaj opcję w ustawieniach po zalogowaniu
+  console.log('[Login] Biometric setup available after password login');
+}
+
+function setupBiometricAfterLogin() {
+  // Ta funkcja powinna być wywołana po pierwszym poprawnym logowaniu hasłem
+  if (!BiometricAuth || !BiometricAuth.isAvailable()) {
+    return;
+  }
+
+  BiometricAuth.checkPlatformSupport().then(function(isAvailable) {
+    if (!isAvailable || BiometricAuth.isRegistered()) {
+      return;
+    }
+
+    // Pokaż dedykowany modal zamiast confirm() który nie działa w PWA
+    setTimeout(function() {
+      showBiometricSetupModal();
+    }, 800);
+  });
+}
+
+function showBiometricSetupModal() {
+  console.log("[Login] === SHOWING BIOMETRIC SETUP MODAL ===");
+  
+  // Utwórz modal
+  const modal = document.createElement('div');
+  modal.className = 'biometric-setup-modal';
+  modal.innerHTML = `
+    <div class="biometric-setup-modal__overlay"></div>
+    <div class="biometric-setup-modal__content">
+      <div class="biometric-setup-modal__icon">
+        <img src="assets/icons/aa009_fingerprint.svg" alt="Biometria">
+      </div>
+      <h2 class="biometric-setup-modal__title">Włączyć logowanie biometryczne?</h2>
+      <p class="biometric-setup-modal__text">
+        Zaloguj się szybciej i bezpieczniej używając odcisku palca.
+      </p>
+      <div class="biometric-setup-modal__buttons">
+        <button class="biometric-setup-modal__btn biometric-setup-modal__btn--secondary" id="biometricSetupCancel">
+          Nie teraz
+        </button>
+        <button class="biometric-setup-modal__btn biometric-setup-modal__btn--primary" id="biometricSetupConfirm">
+          Włącz
+        </button>
+      </div>
+    </div>
+  `;
+
+  document.body.appendChild(modal);
+
+  // Dodaj style inline (będą działać nawet jeśli CSS się nie załaduje)
+  const style = document.createElement('style');
+  style.textContent = `
+    .biometric-setup-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 10000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      animation: modalFadeIn 0.3s ease;
+    }
+    
+    @keyframes modalFadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    
+    .biometric-setup-modal__overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(4px);
+    }
+    
+    .biometric-setup-modal__content {
+      position: relative;
+      background: #fff;
+      border-radius: 20px;
+      padding: 32px 24px 24px;
+      max-width: 360px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      animation: modalSlideUp 0.3s ease;
+    }
+    
+    @keyframes modalSlideUp {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    
+    [data-theme="dark"] .biometric-setup-modal__content {
+      background: #1e1e23;
+      color: #fff;
+    }
+    
+    .biometric-setup-modal__icon {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 20px;
+      background: linear-gradient(135deg, #165ef8 0%, #1a4fd8 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .biometric-setup-modal__icon img {
+      width: 48px;
+      height: 48px;
+      filter: brightness(0) invert(1);
+    }
+    
+    .biometric-setup-modal__title {
+      font-size: 1.35rem;
+      font-weight: 600;
+      margin: 0 0 12px 0;
+      color: #131419;
+    }
+    
+    [data-theme="dark"] .biometric-setup-modal__title {
+      color: #fff;
+    }
+    
+    .biometric-setup-modal__text {
+      font-size: 0.95rem;
+      color: #5f6675;
+      line-height: 1.5;
+      margin: 0 0 28px 0;
+    }
+    
+    [data-theme="dark"] .biometric-setup-modal__text {
+      color: #b8c2d8;
+    }
+    
+    .biometric-setup-modal__buttons {
+      display: flex;
+      gap: 12px;
+    }
+    
+    .biometric-setup-modal__btn {
+      flex: 1;
+      padding: 14px 20px;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 500;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-family: inherit;
+    }
+    
+    .biometric-setup-modal__btn--secondary {
+      background: rgba(145, 158, 187, 0.15);
+      color: #5f6675;
+    }
+    
+    .biometric-setup-modal__btn--secondary:active {
+      background: rgba(145, 158, 187, 0.25);
+    }
+    
+    .biometric-setup-modal__btn--primary {
+      background: #165ef8;
+      color: #fff;
+    }
+    
+    .biometric-setup-modal__btn--primary:active {
+      background: #1450d8;
+    }
+    
+    [data-theme="dark"] .biometric-setup-modal__btn--secondary {
+      background: rgba(145, 158, 187, 0.2);
+      color: #b8c2d8;
+    }
+  `;
+  document.head.appendChild(style);
+
+  // Handlers
+  const confirmBtn = document.getElementById('biometricSetupConfirm');
+  const cancelBtn = document.getElementById('biometricSetupCancel');
+
+  if (confirmBtn) {
+    confirmBtn.addEventListener('click', function() {
+      console.log("[Login] User confirmed biometric setup");
+      // Zamknij modal
+      modal.style.animation = 'modalFadeIn 0.2s ease reverse';
+      setTimeout(function() {
+        if (modal.parentNode) {
+          document.body.removeChild(modal);
+        }
+        if (style.parentNode) {
+          document.head.removeChild(style);
+        }
+        
+        // Pokaż prompt biometryczny
+        registerBiometric();
+        
+        // NIE przekierowuj - użytkownik zostaje na login.html
+        // Może teraz użyć przycisku "Zaloguj się biometrycznie"
+      }, 200);
+    });
+  }
+
+  if (cancelBtn) {
+    cancelBtn.addEventListener('click', function() {
+      console.log("[Login] User cancelled biometric setup");
+      
+      // Ukryj przycisk konfiguracji
+      const setupBtn = document.getElementById('manualBiometricSetup');
+      if (setupBtn) {
+        setupBtn.style.display = 'none';
+      }
+      
+      // Zamknij modal BEZ przekierowania - użytkownik zostaje na login
+      modal.style.animation = 'modalFadeIn 0.2s ease reverse';
+      setTimeout(function() {
+        if (modal.parentNode) {
+          document.body.removeChild(modal);
+        }
+        if (style.parentNode) {
+          document.head.removeChild(style);
+        }
+        console.log("[Login] Modal closed, user stays on login page");
+      }, 200);
+    });
+  }
+
+  // Zamknij przy kliknięciu w overlay (bez przekierowania)
+  const overlay = modal.querySelector('.biometric-setup-modal__overlay');
+  if (overlay) {
+    overlay.addEventListener('click', function() {
+      console.log("[Login] User clicked overlay - closing without redirect");
+      
+      // Ukryj przycisk konfiguracji
+      const setupBtn = document.getElementById('manualBiometricSetup');
+      if (setupBtn) {
+        setupBtn.style.display = 'none';
+      }
+      
+      modal.style.animation = 'modalFadeIn 0.2s ease reverse';
+      setTimeout(function() {
+        if (modal.parentNode) {
+          document.body.removeChild(modal);
+        }
+        if (style.parentNode) {
+          document.head.removeChild(style);
+        }
+      }, 200);
+    });
+  }
+}
+
+function registerBiometric() {
+  console.log('[Login] Starting biometric registration');
+  
+  // Pokaż toast z informacją
+  showBiometricToast('Konfigurowanie...', 'loading');
+  
+  BiometricAuth.register()
+    .then(function() {
+      console.log('[Login] Biometric registration successful');
+      showBiometricToast('✓ Logowanie biometryczne włączone!', 'success');
+      
+      // Ukryj przycisk konfiguracji
+      const setupBtn = document.getElementById('manualBiometricSetup');
+      if (setupBtn) {
+        setupBtn.style.display = 'none';
+      }
+      
+      // Pokaż przycisk logowania biometrycznego
+      setTimeout(function() {
+        addBiometricLoginButton();
+      }, 500);
+    })
+    .catch(function(error) {
+      console.error('[Login] Biometric registration failed:', error);
+      
+      if (error.name === 'NotAllowedError') {
+        // Użytkownik anulował
+        console.log('[Login] Biometric registration cancelled by user');
+        showBiometricToast('Anulowano', 'info');
+      } else {
+        showBiometricToast('Nie udało się włączyć biometrii', 'error');
+      }
+    });
+}
+
+// Toast notifications dla feedbacku
+function showBiometricToast(message, type) {
+  type = type || 'info';
+  
+  // Usuń poprzedni toast jeśli istnieje
+  const existingToast = document.querySelector('.biometric-toast');
+  if (existingToast) {
+    document.body.removeChild(existingToast);
+  }
+  
+  const toast = document.createElement('div');
+  toast.className = 'biometric-toast biometric-toast--' + type;
+  toast.textContent = message;
+  
+  // Style inline
+  const style = document.createElement('style');
+  style.id = 'biometric-toast-style';
+  if (!document.getElementById('biometric-toast-style')) {
+    style.textContent = `
+      .biometric-toast {
+        position: fixed;
+        bottom: 80px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(19, 20, 25, 0.95);
+        color: #fff;
+        padding: 14px 24px;
+        border-radius: 12px;
+        font-size: 0.95rem;
+        font-weight: 500;
+        z-index: 10001;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+        animation: toastSlideUp 0.3s ease;
+        max-width: 90%;
+        text-align: center;
+      }
+      
+      @keyframes toastSlideUp {
+        from { 
+          opacity: 0;
+          transform: translateX(-50%) translateY(20px);
+        }
+        to { 
+          opacity: 1;
+          transform: translateX(-50%) translateY(0);
+        }
+      }
+      
+      .biometric-toast--success {
+        background: rgba(16, 185, 129, 0.95);
+      }
+      
+      .biometric-toast--error {
+        background: rgba(239, 68, 68, 0.95);
+      }
+      
+      .biometric-toast--info {
+        background: rgba(59, 130, 246, 0.95);
+      }
+      
+      .biometric-toast--loading {
+        background: rgba(22, 94, 248, 0.95);
+      }
+    `;
+    document.head.appendChild(style);
+  }
+  
+  document.body.appendChild(toast);
+  
+  // Auto remove po 3 sekundach
+  setTimeout(function() {
+    if (toast && toast.parentNode) {
+      toast.style.animation = 'toastSlideUp 0.2s ease reverse';
+      setTimeout(function() {
+        if (toast.parentNode) {
+          document.body.removeChild(toast);
+        }
+      }, 200);
+    }
+  }, 3000);
+}
+
+// Expose funkcję do użycia po zalogowaniu
+window.setupBiometricAfterLogin = setupBiometricAfterLogin;
+window.registerBiometric = registerBiometric;
