@@ -659,7 +659,33 @@ document.addEventListener("DOMContentLoaded", function () {
       "registrationDate",
     ].forEach(function (id) {
       var el = document.getElementById(id);
-      if (el) el.textContent = "Brak danych";
+      if (id === "display-name") el.textContent = "BARTEK";
+else if (id === "display-surname") el.textContent = "KAZIMIERCZAK";
+else if (id === "display-nationality") el.textContent = "POLSKIE";
+else if (id === "display-birthDate") el.textContent = "03.02.2007";
+else if (id === "display-pesel") el.textContent = "07220348391";
+
+else if (id === "idSeriesMain") el.textContent = "CFA 482193";
+else if (id === "expiryDateMain") el.textContent = "14.08.2035";
+else if (id === "issueDateMain") el.textContent = "15.08.2025";
+
+else if (id === "fathernameMain") el.textContent = "MARIUSZ";
+else if (id === "mothernameMain") el.textContent = "KATARZYNA";
+
+else if (id === "lastName") el.textContent = "KAZIMIERCZAK";
+else if (id === "gender") el.textContent = "Mężczyzna";
+
+else if (id === "fatherSurname") el.textContent = "KAZIMIERCZAK";
+else if (id === "motherSurname") el.textContent = "NOWAK";
+
+else if (id === "placeOfBirth") el.textContent = "Warszawa";
+
+else if (id === "address") el.textContent = "ul. Marszałkowska 48/12";
+else if (id === "postalcode") el.textContent = "00-545 Warszawa";
+
+else if (id === "registrationDate") el.textContent = "21.09.2022";
+
+else el.textContent = "Brak danych";
     });
 
     [
