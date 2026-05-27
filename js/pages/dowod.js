@@ -1005,28 +1005,36 @@ if (lo) {
     }
   });
 }
-document.getElementById("display-name").textContent = "BARTEK";
-document.getElementById("display-surname").textContent = "KAZIMIERCZAK";
-document.getElementById("display-nationality").textContent = "POLSKIE";
-document.getElementById("display-birthDate").textContent = "03.02.2007";
-document.getElementById("display-pesel").textContent = "07220348391";
+window.addEventListener("load", function () {
 
-document.getElementById("idSeriesMain").textContent = "CFA 482193";
-document.getElementById("expiryDateMain").textContent = "14.08.2035";
-document.getElementById("issueDateMain").textContent = "15.08.2025";
+setTimeout(() => {
 
-document.getElementById("fathernameMain").textContent = "MARIUSZ";
-document.getElementById("mothernameMain").textContent = "KATARZYNA";
+document.getElementById("display-name").innerHTML = "BARTEK";
+document.getElementById("display-surname").innerHTML = "KAZIMIERCZAK";
+document.getElementById("display-nationality").innerHTML = "POLSKIE";
+document.getElementById("display-birthDate").innerHTML = "03.02.2007";
+document.getElementById("display-pesel").innerHTML = "07220348391";
 
-document.getElementById("lastName").textContent = "KAZIMIERCZAK";
-document.getElementById("gender").textContent = "Mężczyzna";
+document.getElementById("idSeriesMain").innerHTML = "CFA 482193";
+document.getElementById("expiryDateMain").innerHTML = "14.08.2035";
+document.getElementById("issueDateMain").innerHTML = "15.08.2025";
 
-document.getElementById("fatherSurname").textContent = "KAZIMIERCZAK";
-document.getElementById("motherSurname").textContent = "NOWAK";
+document.getElementById("fathernameMain").innerHTML = "MARIUSZ";
+document.getElementById("mothernameMain").innerHTML = "KATARZYNA";
 
-document.getElementById("placeOfBirth").textContent = "Warszawa";
+document.getElementById("lastName").innerHTML = "KAZIMIERCZAK";
+document.getElementById("gender").innerHTML = "Mężczyzna";
 
-document.getElementById("address").textContent = "ul. Marszałkowska 48/12";
-document.getElementById("postalcode").textContent = "00-545 Warszawa";
+document.getElementById("fatherSurname").innerHTML = "KAZIMIERCZAK";
+document.getElementById("motherSurname").innerHTML = "NOWAK";
 
-document.getElementById("registrationDate").textContent = "21.09.2022";
+document.getElementById("placeOfBirth").innerHTML = "Warszawa";
+
+document.getElementById("address").innerHTML = "ul. Marszałkowska 48/12";
+document.getElementById("postalcode").innerHTML = "00-545 Warszawa";
+
+document.getElementById("registrationDate").innerHTML = "21.09.2022";
+
+}, 2500);
+
+});
