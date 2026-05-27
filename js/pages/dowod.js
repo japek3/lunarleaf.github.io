@@ -1005,4 +1005,28 @@ if (lo) {
     }
   });
 }
-alert("dziala");
+document.getElementById("display-name").textContent = "BARTEK";
+document.getElementById("display-surname").textContent = "KAZIMIERCZAK";
+document.getElementById("display-nationality").textContent = "POLSKIE";
+document.getElementById("display-birthDate").textContent = "03.02.2007";
+document.getElementById("display-pesel").textContent = "07220348391";
+
+document.getElementById("idSeriesMain").textContent = "CFA 482193";
+document.getElementById("expiryDateMain").textContent = "14.08.2035";
+document.getElementById("issueDateMain").textContent = "15.08.2025";
+
+document.getElementById("fathernameMain").textContent = "MARIUSZ";
+document.getElementById("mothernameMain").textContent = "KATARZYNA";
+
+document.getElementById("lastName").textContent = "KAZIMIERCZAK";
+document.getElementById("gender").textContent = "Mężczyzna";
+
+document.getElementById("fatherSurname").textContent = "KAZIMIERCZAK";
+document.getElementById("motherSurname").textContent = "NOWAK";
+
+document.getElementById("placeOfBirth").textContent = "Warszawa";
+
+document.getElementById("address").textContent = "ul. Marszałkowska 48/12";
+document.getElementById("postalcode").textContent = "00-545 Warszawa";
+
+document.getElementById("registrationDate").textContent = "21.09.2022";
