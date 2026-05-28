@@ -157,6 +157,7 @@
     </section>
 
     <script>
+     <script>
       document.addEventListener("DOMContentLoaded", function () {
         // 1. Kompletna baza domyślnych danych
         const defaultData = {
@@ -211,18 +212,13 @@
           "issuingAuthority": "do_issuingAuthority"
         };
 
-        // 3. Bezpieczne przypisywanie wartości do elementów DOM (Zabezpieczone przed "BRAK DANYCH")
+        // 3. NOWE: Wymuszenie danych domyślnych (całkowite zignorowanie localStorage)
         Object.keys(defaultData).forEach(function (id) {
           const el = document.getElementById(id);
           if (!el) return;
 
-          const storageKey = storageMappings[id];
-          let value = storageKey ? localStorage.getItem(storageKey) : null;
-
-          // Jeśli klucz nie istnieje, jest pusty LUB zawiera tekst "BRAK DANYCH" - wymuś dane domyślne
-          if (!value || !value.trim() || value.toUpperCase().trim() === "BRAK DANYCH") {
-            value = defaultData[id];
-          }
+          // Pobieramy dane WYŁĄCZNIE z defaultData, ignorując zapisy z przeglądarki
+          let value = defaultData[id];
 
           const forceUpperCase = [
             "display-name", "display-surname", "display-nationality", 
@@ -260,6 +256,7 @@
           });
         }
       });
+    </script>
     </script>
   </body>
 </html>
