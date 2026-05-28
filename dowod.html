@@ -8,35 +8,29 @@
       /* Tutaj opcjonalnie znajdują się Twoje style CSS */
     </style>
   </head>
-
   <body>
     <section id="praw">
       <div class="cwel">
         <span class="title" id="display-name">BARTEK</span>
         <span class="description">Imię (Imiona)</span>
       </div>
-
       <div class="cwel">
         <span class="title" id="display-surname">KAZIMIERCZAK</span>
         <span class="description">Nazwisko</span>
       </div>
-
       <div class="cwel">
         <span class="title" id="display-nationality">POLSKIE</span>
         <span class="description">Obywatelstwo</span>
       </div>
-
       <div class="cwel">
         <span class="title" id="display-birthDate">03.02.2007</span>
         <span class="description">Data urodzenia</span>
       </div>
-
       <div class="cwel">
         <span class="title" id="display-pesel">07220348391</span>
         <span class="description">Numer PESEL</span>
       </div>
     </section>
-
     <section class="details-card">
       <div class="row">
         <p class="info">Seria i numer mDowodu</p>
@@ -44,81 +38,64 @@
           <p class="main font-numeric" id="idSeriesMain">CFA 482193</p>
         </div>
       </div>
-
       <div class="divider"></div>
-
       <div class="row">
         <p class="info">Termin ważności mDowodu</p>
         <p class="main" id="expiryDateMain">14.08.2035</p>
       </div>
-
       <div class="divider"></div>
-
       <div class="row">
         <p class="info">Data wydania mDowodu</p>
         <p class="main" id="issueDateMain">15.08.2025</p>
       </div>
-
       <div class="divider"></div>
-
       <div class="row">
         <p class="info">Imię ojca</p>
         <p class="main" id="fathernameMain">MARIUSZ</p>
       </div>
-
       <div class="divider"></div>
-
       <div class="row">
         <p class="info">Imię matki</p>
         <p class="main" id="mothernameMain">KATARZYNA</p>
       </div>
     </section>
-
     <div id="extra-toggle" style="cursor: pointer; padding: 15px; background: #f5f5f5; border-radius: 12px; margin: 10px 0; display: flex; justify-content: space-between; align-items: center;">
       <span style="font-weight: 600; font-family: sans-serif;">Zobacz więcej danych</span>
       <img id="extra-arrow" src="assets/icons/ab008_chevron_down.svg" alt="arrow" style="width: 24px; height: 24px;" />
     </div>
-
     <div id="extra-content">
       <div class="content">
         <section class="dana" id="dana1">
           <p class="info">Nazwisko rodowe</p>
           <p class="main" id="lastName">KAZIMIERCZAK</p>
         </section>
-
         <section class="dana">
           <p class="info">Płeć</p>
           <p class="main" id="gender">Mężczyzna</p>
         </section>
-
         <section class="dana">
           <p class="info">Nazwisko rodowe ojca</p>
           <p class="main" id="fatherSurname">KAZIMIERCZAK</p>
         </section>
-
         <section class="dana">
           <p class="info">Nazwisko rodowe matki</p>
           <p class="main" id="motherSurname">NOWAK</p>
         </section>
-
         <section class="dana">
           <p class="info">Miejsce urodzenia</p>
           <p class="main" id="placeOfBirth">Warszawa</p>
         </section>
-
         <section class="dana">
           <p class="info">Adres zameldowania na pobyt stały</p>
           <p class="main" id="address">ul. Marszałkowska 48/12</p>
           <p class="main" id="postalcode">00-545 Warszawa</p>
         </section>
-
         <section class="dana">
           <p class="info">Data zameldowania na pobyt stały</p>
           <p class="main" id="registrationDate">21.09.2022</p>
         </section>
       </div>
     </div>
-
     <section class="details-card">
       <div class="row">
         <p class="info">Seria i numer</p>
@@ -126,38 +103,29 @@
           <p class="main font-numeric" id="idSeries">AYA 928451</p>
         </div>
       </div>
-
       <div class="divider"></div>
-
       <div class="row">
         <p class="info">Status</p>
         <p class="main" id="docStatus">Dokument ważny</p>
       </div>
-
       <div class="divider"></div>
-
       <div class="row">
         <p class="info">Organ wydający</p>
         <p class="main" id="issuingAuthority">Prezydent m.st. Warszawy</p>
       </div>
-
       <div class="divider"></div>
-
       <div class="row">
         <p class="info">Termin ważności</p>
         <p class="main" id="expiryDate">14.08.2035</p>
       </div>
-
       <div class="divider"></div>
-
       <div class="row">
         <p class="info">Data wydania</p>
         <p class="main" id="issueDate">15.08.2025</p>
       </div>
     </section>
-
+ 
     <script>
-     <script>
       document.addEventListener("DOMContentLoaded", function () {
         // 1. Kompletna baza domyślnych danych
         const defaultData = {
@@ -185,8 +153,8 @@
           "expiryDate": "14.08.2035",
           "issueDate": "15.08.2025"
         };
-
-        // 2. Mapowanie odpowiedników kluczy w localStorage
+ 
+        // 2. Mapowanie kluczy w localStorage
         const storageMappings = {
           "display-name": "name",
           "display-surname": "surname",
@@ -211,37 +179,38 @@
           "issueDate": "do_issueDate",
           "issuingAuthority": "do_issuingAuthority"
         };
-
-        // 3. NOWE: Wymuszenie danych domyślnych (całkowite zignorowanie localStorage)
+ 
+        const forceUpperCase = [
+          "display-name", "display-surname", "display-nationality",
+          "fathernameMain", "mothernameMain", "lastName",
+          "fatherSurname", "motherSurname", "placeOfBirth"
+        ];
+ 
+        // 3. Uzupełnianie danych: najpierw localStorage, potem defaultData
         Object.keys(defaultData).forEach(function (id) {
           const el = document.getElementById(id);
           if (!el) return;
-
-          // Pobieramy dane WYŁĄCZNIE z defaultData, ignorując zapisy z przeglądarki
-          let value = defaultData[id];
-
-          const forceUpperCase = [
-            "display-name", "display-surname", "display-nationality", 
-            "fathernameMain", "mothernameMain", "lastName", 
-            "fatherSurname", "motherSurname", "placeOfBirth"
-          ];
-          
+ 
+          const storageKey = storageMappings[id];
+          const stored = storageKey ? localStorage.getItem(storageKey) : null;
+          let value = (stored && stored.trim() !== "") ? stored : defaultData[id];
+ 
           if (forceUpperCase.includes(id)) {
             value = value.toUpperCase();
           }
-
+ 
           el.textContent = value;
         });
-
+ 
         // 4. Obsługa przełącznika rozwijania sekcji
         const toggleBtn = document.querySelector("#extra-toggle");
         const extraContent = document.querySelector("#extra-content");
         const arrowIcon = document.querySelector("#extra-arrow");
-
+ 
         if (toggleBtn && extraContent) {
           let isSectionOpen = false;
           extraContent.style.display = "none";
-
+ 
           toggleBtn.addEventListener("click", function () {
             isSectionOpen = !isSectionOpen;
             if (isSectionOpen) {
@@ -256,7 +225,6 @@
           });
         }
       });
-    </script>
     </script>
   </body>
 </html>
