@@ -1,13 +1,12 @@
 <!DOCTYPE html>
-
 <html lang="pl">
   <head>
     <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
-    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
     <title>mObywatel 4.0</title>
+    <style>
+      /* Tutaj opcjonalnie znajdują się Twoje style CSS */
+    </style>
   </head>
 
   <body>
@@ -17,142 +16,250 @@
         <span class="description">Imię (Imiona)</span>
       </div>
 
-```
-  <div class="cwel">
-    <span class="title" id="display-surname">KAZIMIERCZAK</span>
-    <span class="description">Nazwisko</span>
-  </div>
+      <div class="cwel">
+        <span class="title" id="display-surname">KAZIMIERCZAK</span>
+        <span class="description">Nazwisko</span>
+      </div>
 
-  <div class="cwel">
-    <span class="title" id="display-nationality">POLSKIE</span>
-    <span class="description">Obywatelstwo</span>
-  </div>
+      <div class="cwel">
+        <span class="title" id="display-nationality">POLSKIE</span>
+        <span class="description">Obywatelstwo</span>
+      </div>
 
-  <div class="cwel">
-    <span class="title" id="display-birthDate">03.02.2007</span>
-    <span class="description">Data urodzenia</span>
-  </div>
+      <div class="cwel">
+        <span class="title" id="display-birthDate">03.02.2007</span>
+        <span class="description">Data urodzenia</span>
+      </div>
 
-  <div class="cwel">
-    <span class="title" id="display-pesel">07220348391</span>
-    <span class="description">Numer PESEL</span>
-  </div>
-</section>
+      <div class="cwel">
+        <span class="title" id="display-pesel">07220348391</span>
+        <span class="description">Numer PESEL</span>
+      </div>
+    </section>
 
-<section class="details-card">
-  <div class="row">
-    <p class="info">Seria i numer mDowodu</p>
-    <div class="row-flex">
-      <p class="main font-numeric" id="idSeriesMain">CFA 482193</p>
+    <section class="details-card">
+      <div class="row">
+        <p class="info">Seria i numer mDowodu</p>
+        <div class="row-flex">
+          <p class="main font-numeric" id="idSeriesMain">CFA 482193</p>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="row">
+        <p class="info">Termin ważności mDowodu</p>
+        <p class="main" id="expiryDateMain">14.08.2035</p>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="row">
+        <p class="info">Data wydania mDowodu</p>
+        <p class="main" id="issueDateMain">15.08.2025</p>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="row">
+        <p class="info">Imię ojca</p>
+        <p class="main" id="fathernameMain">MARIUSZ</p>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="row">
+        <p class="info">Imię matki</p>
+        <p class="main" id="mothernameMain">KATARZYNA</p>
+      </div>
+    </section>
+
+    <div id="extra-content">
+      <div class="content">
+        <section class="dana" id="dana1">
+          <p class="info">Nazwisko rodowe</p>
+          <p class="main" id="lastName">KAZIMIERCZAK</p>
+        </section>
+
+        <section class="dana">
+          <p class="info">Płeć</p>
+          <p class="main" id="gender">Mężczyzna</p>
+        </section>
+
+        <section class="dana">
+          <p class="info">Nazwisko rodowe ojca</p>
+          <p class="main" id="fatherSurname">KAZIMIERCZAK</p>
+        </section>
+
+        <section class="dana">
+          <p class="info">Nazwisko rodowe matki</p>
+          <p class="main" id="motherSurname">NOWAK</p>
+        </section>
+
+        <section class="dana">
+          <p class="info">Miejsce urodzenia</p>
+          <p class="main" id="placeOfBirth">Warszawa</p>
+        </section>
+
+        <section class="dana">
+          <p class="info">Adres zameldowania na pobyt stały</p>
+          <p class="main" id="address">ul. Marszałkowska 48/12</p>
+          <p class="main" id="postalcode">00-545 Warszawa</p>
+        </section>
+
+        <section class="dana">
+          <p class="info">Data zameldowania na pobyt stały</p>
+          <p class="main" id="registrationDate">21.09.2022</p>
+        </section>
+      </div>
     </div>
-  </div>
 
-  <div class="divider"></div>
+    <section class="details-card">
+      <div class="row">
+        <p class="info">Seria i numer</p>
+        <div class="row-flex">
+          <p class="main font-numeric" id="idSeries">AYA 928451</p>
+        </div>
+      </div>
 
-  <div class="row">
-    <p class="info">Termin ważności mDowodu</p>
-    <p class="main" id="expiryDateMain">14.08.2035</p>
-  </div>
+      <div class="divider"></div>
 
-  <div class="divider"></div>
+      <div class="row">
+        <p class="info">Status</p>
+        <p class="main" id="docStatus">Dokument ważny</p>
+      </div>
 
-  <div class="row">
-    <p class="info">Data wydania mDowodu</p>
-    <p class="main" id="issueDateMain">15.08.2025</p>
-  </div>
+      <div class="divider"></div>
 
-  <div class="divider"></div>
+      <div class="row">
+        <p class="info">Organ wydający</p>
+        <p class="main" id="issuingAuthority">Prezydent m.st. Warszawy</p>
+      </div>
 
-  <div class="row">
-    <p class="info">Imię ojca</p>
-    <p class="main" id="fathernameMain">MARIUSZ</p>
-  </div>
+      <div class="divider"></div>
 
-  <div class="divider"></div>
+      <div class="row">
+        <p class="info">Termin ważności</p>
+        <p class="main" id="expiryDate">14.08.2035</p>
+      </div>
 
-  <div class="row">
-    <p class="info">Imię matki</p>
-    <p class="main" id="mothernameMain">KATARZYNA</p>
-  </div>
-</section>
+      <div class="divider"></div>
 
-<div id="extra-content">
-  <div class="content">
-    <section class="dana" id="dana1">
-      <p class="info">Nazwisko rodowe</p>
-      <p class="main" id="lastName">KAZIMIERCZAK</p>
+      <div class="row">
+        <p class="info">Data wydania</p>
+        <p class="main" id="issueDate">15.08.2025</p>
+      </div>
     </section>
 
-    <section class="dana">
-      <p class="info">Płeć</p>
-      <p class="main" id="gender">Mężczyzna</p>
-    </section>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // 1. Kompletna baza domyślnych danych (wyskoczą, gdy localStorage będzie pusty)
+        const defaultData = {
+          "display-name": "BARTEK",
+          "display-surname": "KAZIMIERCZAK",
+          "display-nationality": "POLSKIE",
+          "display-birthDate": "03.02.2007",
+          "display-pesel": "07220348391",
+          "idSeriesMain": "CFA 482193",
+          "expiryDateMain": "14.08.2035",
+          "issueDateMain": "15.08.2025",
+          "fathernameMain": "MARIUSZ",
+          "mothernameMain": "KATARZYNA",
+          "lastName": "KAZIMIERCZAK",
+          "gender": "Mężczyzna",
+          "fatherSurname": "KAZIMIERCZAK",
+          "motherSurname": "NOWAK",
+          "placeOfBirth": "Warszawa",
+          "address": "ul. Marszałkowska 48/12",
+          "postalcode": "00-545 Warszawa",
+          "registrationDate": "21.09.2022",
+          "idSeries": "AYA 928451",
+          "docStatus": "Dokument ważny",
+          "issuingAuthority": "Prezydent m.st. Warszawy",
+          "expiryDate": "14.08.2035",
+          "issueDate": "15.08.2025"
+        };
 
-    <section class="dana">
-      <p class="info">Nazwisko rodowe ojca</p>
-      <p class="main" id="fatherSurname">KAZIMIERCZAK</p>
-    </section>
+        // 2. Mapowanie odpowiedników kluczy w localStorage
+        const storageMappings = {
+          "display-name": "name",
+          "display-surname": "surname",
+          "display-nationality": "nationality",
+          "display-birthDate": "birthDate",
+          "display-pesel": "pesel",
+          "lastName": "lastName",
+          "gender": "gender",
+          "fatherSurname": "fatherSurname",
+          "motherSurname": "motherSurname",
+          "placeOfBirth": "placeOfBirth",
+          "address": "address",
+          "postalcode": "postalcode",
+          "registrationDate": "registrationDate",
+          "idSeriesMain": "md_idSeries",
+          "expiryDateMain": "md_expiryDate",
+          "issueDateMain": "md_issueDate",
+          "fathernameMain": "fathername",
+          "mothernameMain": "mothername",
+          "idSeries": "do_idSeries",
+          "expiryDate": "do_expiryDate",
+          "issueDate": "do_issueDate",
+          "issuingAuthority": "do_issuingAuthority"
+        };
 
-    <section class="dana">
-      <p class="info">Nazwisko rodowe matki</p>
-      <p class="main" id="motherSurname">NOWAK</p>
-    </section>
+        // 3. Bezpieczne przypisywanie wartości do elementów DOM
+        Object.keys(defaultData).forEach(function (id) {
+          const el = document.getElementById(id);
+          if (!el) return; // Jeśli elementu nie ma w HTML, pomiń bez rzucania błędem
 
-    <section class="dana">
-      <p class="info">Miejsce urodzenia</p>
-      <p class="main" id="placeOfBirth">Warszawa</p>
-    </section>
+          const storageKey = storageMappings[id];
+          let value = storageKey ? localStorage.getItem(storageKey) : null;
 
-    <section class="dana">
-      <p class="info">Adres zameldowania na pobyt stały</p>
-      <p class="main" id="address">ul. Marszałkowska 48/12</p>
-      <p class="main" id="postalcode">00-545 Warszawa</p>
-    </section>
+          // Jeśli klucz w przeglądarce nie istnieje lub jest pusty, bierzemy dane domyślne
+          if (!value || !value.trim()) {
+            value = defaultData[id];
+          }
 
-    <section class="dana">
-      <p class="info">Data zameldowania na pobyt stały</p>
-      <p class="main" id="registrationDate">21.09.2022</p>
-    </section>
-  </div>
-</div>
+          // Filtrowanie transformacji tekstowych (zamiana na wielkie litery dla wybranych rubryk)
+          const forceUpperCase = [
+            "display-name", "display-surname", "display-nationality", 
+            "fathernameMain", "mothernameMain", "lastName", 
+            "fatherSurname", "motherSurname", "placeOfBirth"
+          ];
+          
+          if (forceUpperCase.includes(id)) {
+            value = value.toUpperCase();
+          }
 
-<section class="details-card">
-  <div class="row">
-    <p class="info">Seria i numer</p>
-    <div class="row-flex">
-      <p class="main font-numeric" id="idSeries">AYA 928451</p>
-    </div>
-  </div>
+          // Wstrzykiwanie tekstu do dokumentu HTML
+          el.textContent = value;
+        });
 
-  <div class="divider"></div>
+        // 4. Obsługa przełącznika rozwijania sekcji (dodatkowe dane)
+        // Kod dopasowany tak, aby współpracował z czystym układem bez niszczenia DOM
+        const toggleBtn = document.querySelector("#extra-toggle");
+        const extraContent = document.querySelector("#extra-content");
+        const arrowIcon = document.querySelector("#extra-arrow");
 
-  <div class="row">
-    <p class="info">Status</p>
-    <p class="main" id="docStatus">Dokument ważny</p>
-  </div>
+        if (toggleBtn && extraContent) {
+          let isSectionOpen = false;
+          
+          // Ustawienie stanu początkowego ukrycia (zamiast kasowania HTML-a)
+          extraContent.style.display = "none";
 
-  <div class="divider"></div>
-
-  <div class="row">
-    <p class="info">Organ wydający</p>
-    <p class="main" id="issuingAuthority">Prezydent m.st. Warszawy</p>
-  </div>
-
-  <div class="divider"></div>
-
-  <div class="row">
-    <p class="info">Termin ważności</p>
-    <p class="main" id="expiryDate">14.08.2035</p>
-  </div>
-
-  <div class="divider"></div>
-
-  <div class="row">
-    <p class="info">Data wydania</p>
-    <p class="main" id="issueDate">15.08.2025</p>
-  </div>
-</section>
-```
-
+          toggleBtn.addEventListener("click", function () {
+            isSectionOpen = !isSectionOpen;
+            if (isSectionOpen) {
+              extraContent.style.display = "block";
+              toggleBtn.style.borderRadius = "12px 12px 0px 0px";
+              if (arrowIcon) arrowIcon.src = "assets/icons/ab007_chevron_up.svg";
+            } else {
+              extraContent.style.display = "none";
+              toggleBtn.style.borderRadius = "12px";
+              if (arrowIcon) arrowIcon.src = "assets/icons/ab008_chevron_down.svg";
+            }
+          });
+        }
+      });
+    </script>
   </body>
 </html>
