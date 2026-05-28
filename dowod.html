@@ -158,7 +158,7 @@
 
     <script>
       document.addEventListener("DOMContentLoaded", function () {
-        // 1. Kompletna baza domyślnych danych (wyskoczą, gdy localStorage będzie pusty)
+        // 1. Kompletna baza domyślnych danych
         const defaultData = {
           "display-name": "BARTEK",
           "display-surname": "KAZIMIERCZAK",
@@ -244,8 +244,8 @@
         if (toggleBtn && extraContent) {
           let isSectionOpen = false;
           
-          // Ustawienie stanu początkowego ukrycia
-          extraContent.style.style.cssText = "display: none;";
+          // Ustawienie stanu początkowego ukrycia (poprawione)
+          extraContent.style.display = "none";
 
           toggleBtn.addEventListener("click", function () {
             isSectionOpen = !isSectionOpen;
