@@ -74,6 +74,11 @@
       </div>
     </section>
 
+    <div id="extra-toggle" style="cursor: pointer; padding: 15px; background: #f5f5f5; border-radius: 12px; margin: 10px 0; display: flex; justify-content: space-between; align-items: center;">
+      <span style="font-weight: 600; font-family: sans-serif;">Zobacz więcej danych</span>
+      <img id="extra-arrow" src="assets/icons/ab008_chevron_down.svg" alt="arrow" style="width: 24px; height: 24px;" />
+    </div>
+
     <div id="extra-content">
       <div class="content">
         <section class="dana" id="dana1">
@@ -209,17 +214,15 @@
         // 3. Bezpieczne przypisywanie wartości do elementów DOM
         Object.keys(defaultData).forEach(function (id) {
           const el = document.getElementById(id);
-          if (!el) return; // Jeśli elementu nie ma w HTML, pomiń bez rzucania błędem
+          if (!el) return;
 
           const storageKey = storageMappings[id];
           let value = storageKey ? localStorage.getItem(storageKey) : null;
 
-          // Jeśli klucz w przeglądarce nie istnieje lub jest pusty, bierzemy dane domyślne
           if (!value || !value.trim()) {
             value = defaultData[id];
           }
 
-          // Filtrowanie transformacji tekstowych (zamiana na wielkie litery dla wybranych rubryk)
           const forceUpperCase = [
             "display-name", "display-surname", "display-nationality", 
             "fathernameMain", "mothernameMain", "lastName", 
@@ -230,12 +233,10 @@
             value = value.toUpperCase();
           }
 
-          // Wstrzykiwanie tekstu do dokumentu HTML
           el.textContent = value;
         });
 
-        // 4. Obsługa przełącznika rozwijania sekcji (dodatkowe dane)
-        // Kod dopasowany tak, aby współpracował z czystym układem bez niszczenia DOM
+        // 4. Obsługa przełącznika rozwijania sekcji
         const toggleBtn = document.querySelector("#extra-toggle");
         const extraContent = document.querySelector("#extra-content");
         const arrowIcon = document.querySelector("#extra-arrow");
@@ -243,8 +244,8 @@
         if (toggleBtn && extraContent) {
           let isSectionOpen = false;
           
-          // Ustawienie stanu początkowego ukrycia (zamiast kasowania HTML-a)
-          extraContent.style.display = "none";
+          // Ustawienie stanu początkowego ukrycia
+          extraContent.style.style.cssText = "display: none;";
 
           toggleBtn.addEventListener("click", function () {
             isSectionOpen = !isSectionOpen;
