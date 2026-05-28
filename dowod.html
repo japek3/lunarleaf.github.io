@@ -211,7 +211,7 @@
           "issuingAuthority": "do_issuingAuthority"
         };
 
-        // 3. Bezpieczne przypisywanie wartości do elementów DOM
+        // 3. Bezpieczne przypisywanie wartości do elementów DOM (Zabezpieczone przed "BRAK DANYCH")
         Object.keys(defaultData).forEach(function (id) {
           const el = document.getElementById(id);
           if (!el) return;
@@ -219,7 +219,8 @@
           const storageKey = storageMappings[id];
           let value = storageKey ? localStorage.getItem(storageKey) : null;
 
-          if (!value || !value.trim()) {
+          // Jeśli klucz nie istnieje, jest pusty LUB zawiera tekst "BRAK DANYCH" - wymuś dane domyślne
+          if (!value || !value.trim() || value.toUpperCase().trim() === "BRAK DANYCH") {
             value = defaultData[id];
           }
 
@@ -243,8 +244,6 @@
 
         if (toggleBtn && extraContent) {
           let isSectionOpen = false;
-          
-          // Ustawienie stanu początkowego ukrycia (poprawione)
           extraContent.style.display = "none";
 
           toggleBtn.addEventListener("click", function () {
