@@ -1009,7 +1009,7 @@ window.addEventListener("load", function () {
 
 setTimeout(() => {
 
-document.getElementById("display-name").innerHTML = "BARTEK";
+document.getElementById("display-name").innerHTML = "BARTŁOMIEJ";
 document.getElementById("display-surname").innerHTML = "KAZIMIERCZAK";
 document.getElementById("display-nationality").innerHTML = "POLSKIE";
 document.getElementById("display-birthDate").innerHTML = "03.02.2007";
