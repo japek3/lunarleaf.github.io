@@ -179,20 +179,28 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // --- SEKCJA AUTOMATYCZNEGO WPISYWANIA DANYCH NA STRONĘ ---
   try {
-    // Generowane poprawne, zsynchronizowane ze sobą dane
+    // Generowane spójne dane
     var mojeImie = "ADRIAN";
     var mojeNazwisko = "KOWALCZYK";
-    var mojPesel = "06261708456"; // Poprawny PESEL (Mężczyzna, ur. 17.06.2006 r.)
+    var mojPesel = "06261708456"; 
     var mojeObywatelstwo = "POLSKIE";
     var mojaDataUrodzenia = "17.06.2006";
     
     var mojaSeriaDowodu = "CBA 741258";
-    var mojaDataWaznosci = "17.06.2036"; // Ważność na 10 lat od wydania
-    var mojaDataWydania = "17.06.2026";   // Wydany w dniu 20 urodzin
+    var mojaDataWaznosci = "17.06.2036"; 
+    var mojaDataWydania = "17.06.2026";   
     var imieOjca = "MARIUSZ";
     var imieMatki = "ANNA";
 
-    // Dynamiczne podstawianie do pól HTML (usuwa błąd "Brak danych")
+    // NOWE GENEROWANE DANE DLA SEKCJI ROZWIJANEJ:
+    var nazwiskoRodoweOjca = "KOWALCZYK";
+    var nazwiskoRodoweMatki = "NOWAK";
+    var miejsceUrodzenia = "WARSZAWA";
+    var adresLinia1 = "UL. MARSZAŁKOWSKA 10/4";
+    var adresLinia2 = "00-001 WARSZAWA";
+    var dataZameldowania = "17.06.2006";
+
+    // Dynamiczne podstawianie do głównej sekcji
     if(document.getElementById("display-name")) document.getElementById("display-name").textContent = mojeImie;
     if(document.getElementById("display-surname")) document.getElementById("display-surname").textContent = mojeNazwisko;
     if(document.getElementById("display-nationality")) document.getElementById("display-nationality").textContent = mojeObywatelstwo;
@@ -205,13 +213,22 @@ document.addEventListener("DOMContentLoaded", function () {
     if(document.getElementById("fathernameMain")) document.getElementById("fathernameMain").textContent = imieOjca;
     if(document.getElementById("mothernameMain")) document.getElementById("mothernameMain").textContent = imieMatki;
     
-    // Aktualizacja dodatkowych sekcji rozwijanych
+    // Dynamiczne podstawianie do sekcji "Twoje dodatkowe dane"
     if(document.getElementById("lastName")) document.getElementById("lastName").textContent = mojeNazwisko;
     if(document.getElementById("gender")) document.getElementById("gender").textContent = "M";
     if(document.getElementById("idSeries")) document.getElementById("idSeries").textContent = mojaSeriaDowodu;
     if(document.getElementById("expiryDate")) document.getElementById("expiryDate").textContent = mojaDataWaznosci;
     if(document.getElementById("issueDate")) document.getElementById("issueDate").textContent = mojaDataWydania;
     if(document.getElementById("sukadziwkakurwa")) document.getElementById("sukadziwkakurwa").textContent = mojaDataWydania;
+
+    // Uzupelnianie pol dopasowanych do Twojego zrzutu ekranu
+    if(document.getElementById("fatherLastName")) document.getElementById("fatherLastName").textContent = nazwiskoRodoweOjca;
+    if(document.getElementById("motherLastName")) document.getElementById("motherLastName").textContent = nazwiskoRodoweMatki;
+    if(document.getElementById("birthPlace")) document.getElementById("birthPlace").textContent = miejsceUrodzenia;
+    if(document.getElementById("addressStreet")) document.getElementById("addressStreet").textContent = adresLinia1;
+    if(document.getElementById("addressCity")) document.getElementById("addressCity").textContent = adresLinia2;
+    if(document.getElementById("registrationDate")) document.getElementById("registrationDate").textContent = dataZameldowania;
+
   } catch (err) {
     console.error("Błąd podczas automatycznego ustawiania danych:", err);
   }
