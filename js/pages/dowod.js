@@ -42,57 +42,12 @@ async function applyProfileImage() {
     var profileImage = document.getElementById("profileImage");
     if (!profileImage) return;
 
-    // Najpierw sprawdź Cache API (szybsze niż localStorage)
-    try {
-      const cache = await caches.open("profile-images-v1");
-      const cachedResponse = await cache.match("profile-image");
-      if (cachedResponse) {
-        const blob = await cachedResponse.blob();
-        const objectURL = URL.createObjectURL(blob);
-        profileImage.src = objectURL;
-        profileImage.style.opacity = "1";
-        return;
-      }
-    } catch (cacheErr) {
-      console.log("Cache API not available, using localStorage");
-    }
-
-    // Fallback do localStorage
-    var stored =
-      localStorage.getItem("profileImage") || localStorage.getItem("photo");
-    if (stored) {
-      profileImage.src = stored;
-      profileImage.style.opacity = "1";
-
-      // Zapisz do Cache API dla następnego razu
-      try {
-        const cache = await caches.open("profile-images-v1");
-        const blob = await fetch(stored).then((r) => r.blob());
-        await cache.put(
-          "profile-image",
-          new Response(blob, {
-            headers: { "Content-Type": "image/jpeg" },
-          })
-        );
-      } catch (_) {}
-    }
+    // Wymuszenie ładowania zdjęcia bezpośrednio z głównego folderu
+    profileImage.src = "Messenger_creation_6AB4BE42-2328-4B27-911C-19C8FC3869D3.jpeg";
+    profileImage.style.opacity = "1";
+    return;
   } catch (_) {}
 }
-
-// Funkcja do aktualizacji zdjęcia profilowego z automatycznym cachowaniem
-async function updateProfileImage(imageData) {
-  try {
-    // Zapisz w localStorage
-    localStorage.setItem("profileImage", imageData);
-
-    // Zapisz w Cache API
-    const cache = await caches.open("profile-images-v1");
-    const blob = await fetch(imageData).then((r) => r.blob());
-    await cache.put(
-      "profile-image",
-      new Response(blob, {
-        headers: { "Content-Type": "image/jpeg" },
-      })
     );
 
     // Odśwież obraz na stronie
