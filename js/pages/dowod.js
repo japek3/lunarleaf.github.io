@@ -10,20 +10,15 @@ setTimeout(function () {
     const bgUrl = "/assets/dowod/mid_background_main.webp";
     const cache = await caches.open("mobywatel-v3");
 
-    // Sprawdź czy już jest w cache
     const cached = await cache.match(bgUrl);
-    if (cached) {
-      return; // Już mamy w cache
-    }
+    if (cached) return;
 
-    // Preload obrazu wtle
     const img = new Image();
     img.decoding = "async";
     img.fetchPriority = "high";
 
     img.onload = async function () {
       try {
-        // Dodaj do cache po załadowaniu
         const response = await fetch(bgUrl);
         if (response.ok) {
           await cache.put(bgUrl, response);
@@ -37,12 +32,12 @@ setTimeout(function () {
   }
 })();
 
+// Funkcja wymuszająca ładowanie Twojego zdjęcia profilowego
 async function applyProfileImage() {
   try {
     var profileImage = document.getElementById("profileImage");
     if (!profileImage) return;
 
-    // Wymuszenie ładowania zdjęcia bezpośrednio z głównego folderu
     profileImage.src = "Messenger_creation_6AB4BE42-2328-4B27-911C-19C8FC3869D3.jpeg";
     profileImage.style.opacity = "1";
     return;
@@ -61,9 +56,7 @@ function closeCamera() {
   if (cameraStream) {
     try {
       cameraStream.getTracks().forEach(function (track) {
-        try {
-          track.stop();
-        } catch (_) {}
+        try { track.stop(); } catch (_) {}
       });
     } catch (_) {}
     cameraStream = null;
@@ -100,9 +93,7 @@ async function openCamera() {
   if (cameraStream) {
     try {
       cameraStream.getTracks().forEach(function (track) {
-        try {
-          track.stop();
-        } catch (_) {}
+        try { track.stop(); } catch (_) {}
       });
     } catch (_) {}
     cameraStream = null;
@@ -157,22 +148,16 @@ async function openCamera() {
     }
   } catch (error) {
     console.error("Error accessing camera:", error);
-    alert(
-      "Nie mozna uzyskac dostepu do aparatu. Sprawdz uprawnienia w przegladarce."
-    );
+    alert("Nie mozna uzyskac dostepu do aparatu. Sprawdz uprawnienia.");
     closeCamera();
     return;
   } finally {
     try {
       requestAnimationFrame(function () {
-        try {
-          document.body.classList.remove("camera-opening");
-        } catch (_) {}
+        try { document.body.classList.remove("camera-opening"); } catch (_) {}
       });
     } catch (_) {
-      try {
-        document.body.classList.remove("camera-opening");
-      } catch (_) {}
+      try { document.body.classList.remove("camera-opening"); } catch (_) {}
     }
   }
 }
@@ -192,6 +177,46 @@ document.addEventListener("DOMContentLoaded", function () {
     window.closeCamera = closeCamera;
   } catch (_) {}
 
+  // --- SEKCJA AUTOMATYCZNEGO WPISYWANIA DANYCH NA STRONĘ ---
+  try {
+    // Wpisz tutaj swoje prawdziwe dane pomiędzy cudzysłowami:
+    var mojeImie = "JAN";
+    var mojeNazwisko = "KOWALSKI";
+    var mojPesel = "062617XXXXX";
+    var mojeObywatelstwo = "POLSKIE";
+    var mojaDataUrodzenia = "17.06.2006";
+    
+    var mojaSeriaDowodu = "ABC 123456";
+    var mojaDataWaznosci = "17.06.2031";
+    var mojaDataWydania = "17.06.2026";
+    var imieOjca = "ADAM";
+    var imieMatki = "EWA";
+
+    // Dynamiczne podstawianie do pól HTML (usuwa błąd "Brak danych")
+    if(document.getElementById("display-name")) document.getElementById("display-name").textContent = mojeImie;
+    if(document.getElementById("display-surname")) document.getElementById("display-surname").textContent = mojeNazwisko;
+    if(document.getElementById("display-nationality")) document.getElementById("display-nationality").textContent = mojeObywatelstwo;
+    if(document.getElementById("display-birthDate")) document.getElementById("display-birthDate").textContent = mojaDataUrodzenia;
+    if(document.getElementById("display-pesel")) document.getElementById("display-pesel").textContent = mojPesel;
+    
+    if(document.getElementById("idSeriesMain")) document.getElementById("idSeriesMain").textContent = mojaSeriaDowodu;
+    if(document.getElementById("expiryDateMain")) document.getElementById("expiryDateMain").textContent = mojaDataWaznosci;
+    if(document.getElementById("issueDateMain")) document.getElementById("issueDateMain").textContent = mojaDataWydania;
+    if(document.getElementById("fathernameMain")) document.getElementById("fathernameMain").textContent = imieOjca;
+    if(document.getElementById("mothernameMain")) document.getElementById("mothernameMain").textContent = imieMatki;
+    
+    // Aktualizacja dodatkowych sekcji rozwijanych
+    if(document.getElementById("lastName")) document.getElementById("lastName").textContent = mojeNazwisko;
+    if(document.getElementById("gender")) document.getElementById("gender").textContent = "M";
+    if(document.getElementById("idSeries")) document.getElementById("idSeries").textContent = mojaSeriaDowodu;
+    if(document.getElementById("expiryDate")) document.getElementById("expiryDate").textContent = mojaDataWaznosci;
+    if(document.getElementById("issueDate")) document.getElementById("issueDate").textContent = mojaDataWydania;
+    if(document.getElementById("sukadziwkakurwa")) document.getElementById("sukadziwkakurwa").textContent = mojaDataWydania;
+  } catch (err) {
+    console.error("Błąd podczas automatycznego ustawiania danych:", err);
+  }
+  // --- KONIEC SEKCJI DANYCH ---
+
   var notificationTimer = null;
   var hideToast = function (restoreDefault) {
     try {
@@ -205,12 +230,8 @@ document.addEventListener("DOMContentLoaded", function () {
         clearTimeout(notificationTimer);
         notificationTimer = null;
       }
-      try {
-        n.classList.remove("show");
-      } catch (_) {}
-      try {
-        n.style.display = "none";
-      } catch (_) {}
+      try { n.classList.remove("show"); } catch (_) {}
+      try { n.style.display = "none"; } catch (_) {}
       if (restoreDefault) {
         if (textEl) textEl.textContent = defaultText || "";
         else n.textContent = defaultText || "";
@@ -224,26 +245,16 @@ document.addEventListener("DOMContentLoaded", function () {
       if (!n) return;
       var textEl = n.querySelector(".notification-text");
       if (textEl && !textEl.getAttribute("data-default")) {
-        try {
-          textEl.setAttribute("data-default", textEl.textContent);
-        } catch (_) {}
+        try { textEl.setAttribute("data-default", textEl.textContent); } catch (_) {}
       }
-      var defaultText = textEl
-        ? textEl.getAttribute("data-default") || textEl.textContent
-        : n.getAttribute("data-default") || n.textContent;
       if (!durationMs || durationMs <= 0) durationMs = 5000;
-      var willRestore =
-        typeof restoreDefault === "undefined" ? !!msg : !!restoreDefault;
+      var willRestore = typeof restoreDefault === "undefined" ? !!msg : !!restoreDefault;
       if (msg != null && String(msg).length) {
         if (textEl) textEl.textContent = msg;
         else n.textContent = msg;
       }
-      try {
-        n.style.display = "block";
-      } catch (_) {}
-      try {
-        n.classList.add("show");
-      } catch (_) {}
+      try { n.style.display = "block"; } catch (_) {}
+      try { n.classList.add("show"); } catch (_) {}
       if (notificationTimer) {
         clearTimeout(notificationTimer);
         notificationTimer = null;
@@ -278,9 +289,7 @@ document.addEventListener("DOMContentLoaded", function () {
   } catch (e) {}
 
   try {
-    var scanIcon = document.querySelector(
-      '.quick-actions img[src$="ai002_confirm_identity_mini.svg"]'
-    );
+    var scanIcon = document.querySelector('.quick-actions img[src$="ai002_confirm_identity_mini.svg"]');
     if (scanIcon) {
       var scanBtn = scanIcon.closest(".qa-item") || scanIcon;
       scanBtn.style.cursor = "pointer";
@@ -290,9 +299,7 @@ document.addEventListener("DOMContentLoaded", function () {
           ev.stopPropagation();
         } catch (_) {}
         if (typeof openCamera === "function") {
-          try {
-            openCamera();
-          } catch (_) {}
+          try { openCamera(); } catch (_) {}
         } else {
           window.location.href = "qr.html?scan=1";
         }
@@ -305,9 +312,7 @@ document.addEventListener("DOMContentLoaded", function () {
     var helpIcon = document.querySelector(".help-icon");
     
     var openHelp = function () {
-      if (helpOverlay) {
-        helpOverlay.style.display = "block";
-      }
+      if (helpOverlay) helpOverlay.style.display = "block";
       try { document.body.classList.add("camera-open"); } catch (_) {}
       try { document.body.classList.add("no-scroll"); } catch (_) {}
     };
