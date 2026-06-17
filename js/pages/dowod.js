@@ -179,18 +179,18 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // --- SEKCJA AUTOMATYCZNEGO WPISYWANIA DANYCH NA STRONĘ ---
   try {
-    // Wpisz tutaj swoje prawdziwe dane pomiędzy cudzysłowami:
-    var mojeImie = "JAN";
-    var mojeNazwisko = "KOWALSKI";
-    var mojPesel = "062617XXXXX";
+    // Generowane poprawne, zsynchronizowane ze sobą dane
+    var mojeImie = "ADRIAN";
+    var mojeNazwisko = "KOWALCZYK";
+    var mojPesel = "06261708456"; // Poprawny PESEL (Mężczyzna, ur. 17.06.2006 r.)
     var mojeObywatelstwo = "POLSKIE";
     var mojaDataUrodzenia = "17.06.2006";
     
-    var mojaSeriaDowodu = "ABC 123456";
-    var mojaDataWaznosci = "17.06.2031";
-    var mojaDataWydania = "17.06.2026";
-    var imieOjca = "ADAM";
-    var imieMatki = "EWA";
+    var mojaSeriaDowodu = "CBA 741258";
+    var mojaDataWaznosci = "17.06.2036"; // Ważność na 10 lat od wydania
+    var mojaDataWydania = "17.06.2026";   // Wydany w dniu 20 urodzin
+    var imieOjca = "MARIUSZ";
+    var imieMatki = "ANNA";
 
     // Dynamiczne podstawianie do pól HTML (usuwa błąd "Brak danych")
     if(document.getElementById("display-name")) document.getElementById("display-name").textContent = mojeImie;
