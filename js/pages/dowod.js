@@ -4,7 +4,7 @@ setTimeout(function () {
   } catch (e) {}
 }, 0);
 
-// Preload i cache tła dla błyskawicznego ładowania
+// Preload i cache tła
 (async function preloadBackgroundImage() {
   try {
     const bgUrl = "/assets/dowod/mid_background_main.webp";
@@ -32,7 +32,7 @@ setTimeout(function () {
   }
 })();
 
-// Funkcja wymuszająca ładowanie Twojego zdjęcia profilowego
+// Funkcja wymuszająca ładowanie zdjęcia profilowego
 async function applyProfileImage() {
   try {
     var profileImage = document.getElementById("profileImage");
@@ -148,7 +148,6 @@ async function openCamera() {
     }
   } catch (error) {
     console.error("Error accessing camera:", error);
-    alert("Nie mozna uzyskac dostepu do aparatu. Sprawdz uprawnienia.");
     closeCamera();
     return;
   } finally {
@@ -177,9 +176,8 @@ document.addEventListener("DOMContentLoaded", function () {
     window.closeCamera = closeCamera;
   } catch (_) {}
 
-  // --- SEKCJA AUTOMATYCZNEGO WPISYWANIA DANYCH NA STRONĘ ---
+  // --- SEKCJA AUTOMATYCZNEGO WPISYWANIA DANYCH ---
   try {
-    // Generowane spójne dane
     var mojeImie = "ADRIAN";
     var mojeNazwisko = "KOWALCZYK";
     var mojPesel = "06261708456"; 
@@ -192,42 +190,46 @@ document.addEventListener("DOMContentLoaded", function () {
     var imieOjca = "MARIUSZ";
     var imieMatki = "ANNA";
 
-    // NOWE GENEROWANE DANE DLA SEKCJI ROZWIJANEJ:
     var nazwiskoRodoweOjca = "KOWALCZYK";
     var nazwiskoRodoweMatki = "NOWAK";
     var miejsceUrodzenia = "WARSZAWA";
-    var adresLinia1 = "UL. MARSZAŁKOWSKA 10/4";
-    var adresLinia2 = "00-001 WARSZAWA";
+    var adresUlica = "UL. MARSZAŁKOWSKA 10/4";
+    var adresKodMiasto = "00-001 WARSZAWA";
     var dataZameldowania = "17.06.2006";
 
-    // Dynamiczne podstawianie do głównej sekcji
+    // 1. Ekran główny (Górna sekcja)
     if(document.getElementById("display-name")) document.getElementById("display-name").textContent = mojeImie;
     if(document.getElementById("display-surname")) document.getElementById("display-surname").textContent = mojeNazwisko;
     if(document.getElementById("display-nationality")) document.getElementById("display-nationality").textContent = mojeObywatelstwo;
     if(document.getElementById("display-birthDate")) document.getElementById("display-birthDate").textContent = mojaDataUrodzenia;
     if(document.getElementById("display-pesel")) document.getElementById("display-pesel").textContent = mojPesel;
     
+    // 2. Karta z podstawowymi danymi mDowodu
     if(document.getElementById("idSeriesMain")) document.getElementById("idSeriesMain").textContent = mojaSeriaDowodu;
     if(document.getElementById("expiryDateMain")) document.getElementById("expiryDateMain").textContent = mojaDataWaznosci;
     if(document.getElementById("issueDateMain")) document.getElementById("issueDateMain").textContent = mojaDataWydania;
     if(document.getElementById("fathernameMain")) document.getElementById("fathernameMain").textContent = imieOjca;
     if(document.getElementById("mothernameMain")) document.getElementById("mothernameMain").textContent = imieMatki;
     
-    // Dynamiczne podstawianie do sekcji "Twoje dodatkowe dane"
+    // 3. Rozwijana karta "Twoje dodatkowe dane" (Dopasowane dokładnie do ID z HTML)
     if(document.getElementById("lastName")) document.getElementById("lastName").textContent = mojeNazwisko;
     if(document.getElementById("gender")) document.getElementById("gender").textContent = "M";
+    if(document.getElementById("fatherSurname")) document.getElementById("fatherSurname").textContent = nazwiskoRodoweOjca;
+    if(document.getElementById("motherSurname")) document.getElementById("motherSurname").textContent = nazwiskoRodoweMatki;
+    if(document.getElementById("placeOfBirth")) document.getElementById("placeOfBirth").textContent = miejsceUrodzenia;
+    if(document.getElementById("address")) document.getElementById("address").textContent = adresUlica;
+    if(document.getElementById("postalcode")) document.getElementById("postalcode").textContent = adresKodMiasto;
+    if(document.getElementById("registrationDate")) document.getElementById("registrationDate").textContent = dataZameldowania;
+
+    // 4. Modal (Dane dowodu osobistego) oraz daty aktualizacji
     if(document.getElementById("idSeries")) document.getElementById("idSeries").textContent = mojaSeriaDowodu;
     if(document.getElementById("expiryDate")) document.getElementById("expiryDate").textContent = mojaDataWaznosci;
     if(document.getElementById("issueDate")) document.getElementById("issueDate").textContent = mojaDataWydania;
+    if(document.getElementById("docStatus")) document.getElementById("docStatus").textContent = "WAŻNY";
+    if(document.getElementById("issuingAuthority")) document.getElementById("issuingAuthority").textContent = "PREZYDENT MIASTA WARSZAWY";
+    
     if(document.getElementById("sukadziwkakurwa")) document.getElementById("sukadziwkakurwa").textContent = mojaDataWydania;
-
-    // Uzupelnianie pol dopasowanych do Twojego zrzutu ekranu
-    if(document.getElementById("fatherLastName")) document.getElementById("fatherLastName").textContent = nazwiskoRodoweOjca;
-    if(document.getElementById("motherLastName")) document.getElementById("motherLastName").textContent = nazwiskoRodoweMatki;
-    if(document.getElementById("birthPlace")) document.getElementById("birthPlace").textContent = miejsceUrodzenia;
-    if(document.getElementById("addressStreet")) document.getElementById("addressStreet").textContent = adresLinia1;
-    if(document.getElementById("addressCity")) document.getElementById("addressCity").textContent = adresLinia2;
-    if(document.getElementById("registrationDate")) document.getElementById("registrationDate").textContent = dataZameldowania;
+    if(document.getElementById("sukadziwkakurwa_modal")) document.getElementById("sukadziwkakurwa_modal").textContent = mojaDataWydania;
 
   } catch (err) {
     console.error("Błąd podczas automatycznego ustawiania danych:", err);
@@ -235,116 +237,4 @@ document.addEventListener("DOMContentLoaded", function () {
   // --- KONIEC SEKCJI DANYCH ---
 
   var notificationTimer = null;
-  var hideToast = function (restoreDefault) {
-    try {
-      var n = document.getElementById("notification");
-      if (!n) return;
-      var textEl = n.querySelector(".notification-text");
-      var defaultText = textEl
-        ? textEl.getAttribute("data-default") || textEl.textContent
-        : n.getAttribute("data-default") || n.textContent;
-      if (notificationTimer) {
-        clearTimeout(notificationTimer);
-        notificationTimer = null;
-      }
-      try { n.classList.remove("show"); } catch (_) {}
-      try { n.style.display = "none"; } catch (_) {}
-      if (restoreDefault) {
-        if (textEl) textEl.textContent = defaultText || "";
-        else n.textContent = defaultText || "";
-      }
-    } catch (_) {}
-  };
-
-  var showToast = function (msg, durationMs, restoreDefault) {
-    try {
-      var n = document.getElementById("notification");
-      if (!n) return;
-      var textEl = n.querySelector(".notification-text");
-      if (textEl && !textEl.getAttribute("data-default")) {
-        try { textEl.setAttribute("data-default", textEl.textContent); } catch (_) {}
-      }
-      if (!durationMs || durationMs <= 0) durationMs = 5000;
-      var willRestore = typeof restoreDefault === "undefined" ? !!msg : !!restoreDefault;
-      if (msg != null && String(msg).length) {
-        if (textEl) textEl.textContent = msg;
-        else n.textContent = msg;
-      }
-      try { n.style.display = "block"; } catch (_) {}
-      try { n.classList.add("show"); } catch (_) {}
-      if (notificationTimer) {
-        clearTimeout(notificationTimer);
-        notificationTimer = null;
-      }
-      notificationTimer = setTimeout(function () {
-        hideToast(willRestore);
-      }, durationMs);
-    } catch (_) {}
-  };
-
-  try {
-    var closeBtn = document.querySelector("#notification .notification-close");
-    if (closeBtn)
-      closeBtn.addEventListener("click", function () {
-        hideToast(true);
-      });
-  } catch (_) {}
-  applyProfileImage();
-
-  try {
-    var border = document.querySelector(".photo-border");
-    var profileImage = document.getElementById("profileImage");
-    if (border && profileImage) {
-      var updateImageSize = function () {
-        var rect = border.getBoundingClientRect();
-        profileImage.style.width = rect.width + "px";
-        profileImage.style.height = rect.height + "px";
-      };
-      updateImageSize();
-      window.addEventListener("resize", updateImageSize);
-    }
-  } catch (e) {}
-
-  try {
-    var scanIcon = document.querySelector('.quick-actions img[src$="ai002_confirm_identity_mini.svg"]');
-    if (scanIcon) {
-      var scanBtn = scanIcon.closest(".qa-item") || scanIcon;
-      scanBtn.style.cursor = "pointer";
-      scanBtn.addEventListener("click", function (ev) {
-        try {
-          ev.preventDefault();
-          ev.stopPropagation();
-        } catch (_) {}
-        if (typeof openCamera === "function") {
-          try { openCamera(); } catch (_) {}
-        } else {
-          window.location.href = "qr.html?scan=1";
-        }
-      });
-    }
-  } catch (_) {}
-
-  try {
-    var helpOverlay = document.getElementById("help-overlay");
-    var helpIcon = document.querySelector(".help-icon");
-    
-    var openHelp = function () {
-      if (helpOverlay) helpOverlay.style.display = "block";
-      try { document.body.classList.add("camera-open"); } catch (_) {}
-      try { document.body.classList.add("no-scroll"); } catch (_) {}
-    };
-    
-    var closeHelp = function () {
-      if (helpOverlay) helpOverlay.style.display = "none";
-      try { document.body.classList.remove("camera-open"); } catch (_) {}
-      try { document.body.classList.remove("no-scroll"); } catch (_) {}
-    };
-
-    if (helpIcon) {
-      helpIcon.addEventListener("click", openHelp);
-    }
-    window.closeHelpOverlay = closeHelp;
-  } catch (e) {
-    console.error("Help overlay init error:", e);
-  }
-});
+  var hide
